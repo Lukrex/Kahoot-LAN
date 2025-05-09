@@ -25,12 +25,14 @@ namespace KahootLAN
         private async void btnHost_Click_1(object sender, EventArgs e)
         {
             isHost = true;
-            btnStartQuiz.Visible = true;
+            panel1.Visible = false;
+            panel2.Visible = true;
             string ip = GetLocalIPAddress();
             MessageBox.Show($"Server started at {ip}:{port}");
             server = new TcpListener(IPAddress.Any, port);
             server.Start();
             await AcceptClientsAsync();
+
         }
 
         private async Task AcceptClientsAsync() 

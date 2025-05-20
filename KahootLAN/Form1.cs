@@ -40,7 +40,7 @@ namespace KahootLAN
             panel1.Visible = false;
             panel2.Visible = true;
 
-            // Ensure the Start Quiz button is visible only for the host
+            btnLoadQuestions.Visible = true;
             btnStartQuiz.Visible = true;
 
             string ip = GetLocalIPAddress();
@@ -353,6 +353,25 @@ namespace KahootLAN
 
             isHost = false;
             nickname = null;
+        }
+
+        private void btnLoadQuestions_Click(object sender, EventArgs e)
+        {
+            if (!isHost) return;
+
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+                openFileDialog.Title = "Select a Questions File";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+                    MessageBox.Show($"Selected file: {filePath}");
+
+                    // logiku čítania otázok zo súboru pridáme neskôr
+                }
+            }
         }
 
     }

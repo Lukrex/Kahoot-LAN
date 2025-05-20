@@ -36,6 +36,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.listBox1 = new System.Windows.Forms.ListBox();
+            this.btnLoadQuestions = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -75,7 +76,7 @@
             // 
             // btnStartQuiz
             // 
-            this.btnStartQuiz.Location = new System.Drawing.Point(340, 350);
+            this.btnStartQuiz.Location = new System.Drawing.Point(340, 384);
             this.btnStartQuiz.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnStartQuiz.Name = "btnStartQuiz";
             this.btnStartQuiz.Size = new System.Drawing.Size(120, 30);
@@ -112,6 +113,7 @@
             this.panel2.Controls.Add(this.label2);
             this.panel2.Controls.Add(this.listBox1);
             this.panel2.Controls.Add(this.btnStartQuiz);
+            this.panel2.Controls.Add(this.btnLoadQuestions);
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Margin = new System.Windows.Forms.Padding(4);
             this.panel2.Name = "panel2";
@@ -139,6 +141,18 @@
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(400, 244);
             this.listBox1.TabIndex = 4;
+            // 
+            // btnLoadQuestions
+            // 
+            this.btnLoadQuestions.Location = new System.Drawing.Point(340, 347);
+            this.btnLoadQuestions.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnLoadQuestions.Name = "btnLoadQuestions";
+            this.btnLoadQuestions.Size = new System.Drawing.Size(120, 30);
+            this.btnLoadQuestions.TabIndex = 6;
+            this.btnLoadQuestions.Text = "Load Questions";
+            this.btnLoadQuestions.UseVisualStyleBackColor = true;
+            this.btnLoadQuestions.Visible = false;
+            this.btnLoadQuestions.Click += new System.EventHandler(this.btnLoadQuestions_Click);
             // 
             // panel3
             // 
@@ -287,6 +301,7 @@
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Button btnSubmit;
         private System.Windows.Forms.Button btnNextQuestion;
+        private System.Windows.Forms.Button btnLoadQuestions;
     }
 }
 

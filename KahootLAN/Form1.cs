@@ -27,20 +27,30 @@ namespace KahootLAN
             isHost = true;
             panel1.Visible = false;
             panel2.Visible = true;
+
+            // Ensure the Start Quiz button is visible only for the host
+            btnStartQuiz.Visible = true;
+
             string ip = GetLocalIPAddress();
             MessageBox.Show($"Server started at {ip}:{port}");
             server = new TcpListener(IPAddress.Any, port);
             server.Start();
             await AcceptClientsAsync();
-
         }
 
-        private async Task AcceptClientsAsync() 
+        private async Task AcceptClientsAsync()
         {
             while (true)
             {
                 TcpClient newClient = await server.AcceptTcpClientAsync();
                 clients.Add(newClient);
+
+                // Update the listBox1 with the new client
+                Invoke((Action)(() =>
+                {
+                    listBox1.Items.Add($"Client {clients.Count} connected");
+                }));
+
                 _ = ReceiveFromClientAsync(newClient); // fire and forget
             }
         }
@@ -61,14 +71,24 @@ namespace KahootLAN
         private async void btnJoin_Click_1(object sender, EventArgs e)
         {
             isHost = false;
-            panel1.Visible=false;
-            panel3.Visible=true;
+            panel1.Visible = false;
+            panel2.Visible = true;
+
+            // Ensure the Start Quiz button is hidden for clients
+            btnStartQuiz.Visible = false;
+
             string ip = Prompt.ShowDialog("Enter Host IP:", "Join Game");
             client = new TcpClient();
             await client.ConnectAsync(IPAddress.Parse(ip), port);
             stream = client.GetStream();
             _ = ReceiveFromServerAsync();
             MessageBox.Show("Connected to server!");
+
+            // Update the listBox1 for the client
+            Invoke((Action)(() =>
+            {
+                listBox1.Items.Add("You are connected to the server.");
+            }));
         }
 
         private async Task ReceiveFromServerAsync()

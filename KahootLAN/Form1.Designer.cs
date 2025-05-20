@@ -80,6 +80,7 @@
             this.btnStartQuiz.TabIndex = 2;
             this.btnStartQuiz.Text = "Start Quiz";
             this.btnStartQuiz.UseVisualStyleBackColor = true;
+            this.btnStartQuiz.Visible = false;
             this.btnStartQuiz.Click += new System.EventHandler(this.btnStartQuiz_Click_1);
             // 
             // panel1

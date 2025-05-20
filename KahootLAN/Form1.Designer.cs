@@ -75,10 +75,10 @@
             // 
             // btnStartQuiz
             // 
-            this.btnStartQuiz.Location = new System.Drawing.Point(359, 220);
+            this.btnStartQuiz.Location = new System.Drawing.Point(340, 350);
             this.btnStartQuiz.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnStartQuiz.Name = "btnStartQuiz";
-            this.btnStartQuiz.Size = new System.Drawing.Size(75, 23);
+            this.btnStartQuiz.Size = new System.Drawing.Size(120, 30);
             this.btnStartQuiz.TabIndex = 2;
             this.btnStartQuiz.Text = "Start Quiz";
             this.btnStartQuiz.UseVisualStyleBackColor = true;
@@ -123,7 +123,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label2.Location = new System.Drawing.Point(299, 64);
+            this.label2.Location = new System.Drawing.Point(316, 35);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(183, 29);
@@ -134,10 +134,10 @@
             // 
             this.listBox1.FormattingEnabled = true;
             this.listBox1.ItemHeight = 16;
-            this.listBox1.Location = new System.Drawing.Point(317, 97);
+            this.listBox1.Location = new System.Drawing.Point(211, 80);
             this.listBox1.Margin = new System.Windows.Forms.Padding(4);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(159, 116);
+            this.listBox1.Size = new System.Drawing.Size(400, 244);
             this.listBox1.TabIndex = 4;
             // 
             // panel3
@@ -158,7 +158,7 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(300, 68);
+            this.pictureBox1.Location = new System.Drawing.Point(300, 84);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(199, 116);
@@ -167,62 +167,66 @@
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label3.Location = new System.Drawing.Point(297, 33);
+            this.label3.Location = new System.Drawing.Point(0, 30);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(197, 31);
+            this.label3.Size = new System.Drawing.Size(800, 50);
             this.label3.TabIndex = 7;
             this.label3.Text = "Znenie otázky";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // checkBox4
             // 
             this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(487, 241);
+            this.checkBox4.Location = new System.Drawing.Point(480, 265);
             this.checkBox4.Margin = new System.Windows.Forms.Padding(4);
             this.checkBox4.Name = "checkBox4";
             this.checkBox4.Size = new System.Drawing.Size(95, 20);
             this.checkBox4.TabIndex = 6;
             this.checkBox4.Text = "checkBox4";
+            this.checkBox4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox4.UseVisualStyleBackColor = true;
             // 
             // checkBox3
             // 
             this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(487, 192);
+            this.checkBox3.Location = new System.Drawing.Point(480, 210);
             this.checkBox3.Margin = new System.Windows.Forms.Padding(4);
             this.checkBox3.Name = "checkBox3";
             this.checkBox3.Size = new System.Drawing.Size(95, 20);
             this.checkBox3.TabIndex = 5;
             this.checkBox3.Text = "checkBox3";
+            this.checkBox3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox3.UseVisualStyleBackColor = true;
             // 
             // checkBox2
             // 
             this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(203, 241);
+            this.checkBox2.Location = new System.Drawing.Point(120, 265);
             this.checkBox2.Margin = new System.Windows.Forms.Padding(4);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(95, 20);
             this.checkBox2.TabIndex = 4;
             this.checkBox2.Text = "checkBox2";
+            this.checkBox2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(203, 192);
+            this.checkBox1.Location = new System.Drawing.Point(120, 210);
             this.checkBox1.Margin = new System.Windows.Forms.Padding(4);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(95, 20);
             this.checkBox1.TabIndex = 3;
             this.checkBox1.Text = "checkBox1";
+            this.checkBox1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // btnSubmit
             // 
-            this.btnSubmit.Location = new System.Drawing.Point(350, 287);
+            this.btnSubmit.Location = new System.Drawing.Point(350, 330);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(100, 30);
             this.btnSubmit.TabIndex = 3;
@@ -233,7 +237,7 @@
             // 
             // btnNextQuestion
             // 
-            this.btnNextQuestion.Location = new System.Drawing.Point(340, 326);
+            this.btnNextQuestion.Location = new System.Drawing.Point(340, 330);
             this.btnNextQuestion.Name = "btnNextQuestion";
             this.btnNextQuestion.Size = new System.Drawing.Size(120, 30);
             this.btnNextQuestion.TabIndex = 3;

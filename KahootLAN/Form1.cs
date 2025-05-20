@@ -98,19 +98,35 @@ namespace KahootLAN
             {
                 int byteCount = await stream.ReadAsync(buffer, 0, buffer.Length);
                 string message = Encoding.UTF8.GetString(buffer, 0, byteCount);
-                // Handle server messages (e.g., new question, start signal)
-                Console.WriteLine($"Server says: {message}");
+
+                if (message == "START_QUIZ")
+                {
+                    // Start the quiz for the client
+                    Invoke((Action)(() =>
+                    {
+                        StartQuiz();
+                    }));
+                }
+                else
+                {
+                    Console.WriteLine($"Server says: {message}");
+                }
             }
         }
 
         private async void btnStartQuiz_Click_1(object sender, EventArgs e)
         {
             if (!isHost) return;
+
+            // Notify all clients to start the quiz
             foreach (var cl in clients)
             {
                 var msg = Encoding.UTF8.GetBytes("START_QUIZ");
                 await cl.GetStream().WriteAsync(msg, 0, msg.Length);
             }
+
+            // Start the quiz for the host
+            StartQuiz();
         }
 
         private string GetLocalIPAddress()
@@ -124,6 +140,19 @@ namespace KahootLAN
                 }
             }
             throw new Exception("No network adapters with an IPv4 address in the system!");
+        }
+        private void StartQuiz()
+        {
+            // Hide the current panel and show the quiz panel
+            panel2.Visible = false;
+            panel3.Visible = true;
+
+            // Initialize the quiz (e.g., load the first question)
+            label3.Text = "Question 1: What is 2 + 2?";
+            checkBox1.Text = "3";
+            checkBox2.Text = "4";
+            checkBox3.Text = "5";
+            checkBox4.Text = "6";
         }
 
 

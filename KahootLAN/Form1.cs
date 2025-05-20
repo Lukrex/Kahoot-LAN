@@ -228,6 +228,35 @@ namespace KahootLAN
             stream.WriteAsync(msg, 0, msg.Length);
         }
 
+        private void btnNextQuestion_Click(object sender, EventArgs e)
+        {
+            // Show leaderboard
+            var leaderboard = string.Join("\n", playerScores.OrderByDescending(p => p.Value)
+                .Select(p => $"{p.Key}: {p.Value} points"));
+
+            foreach (var cl in clients)
+            {
+                var msg = Encoding.UTF8.GetBytes($"LEADERBOARD|{leaderboard}");
+                cl.GetStream().WriteAsync(msg, 0, msg.Length);
+            }
+
+            MessageBox.Show($"Leaderboard:\n{leaderboard}");
+
+            // Move to the next question
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.Count)
+            {
+                SendQuestionToClients();
+                DisplayQuestion(questions[currentQuestionIndex]);
+            }
+            else
+            {
+                MessageBox.Show("Quiz finished!");
+                panel3.Visible = false;
+                panel2.Visible = true;
+            }
+        }
+
     }
 
     // Helper for input dialog

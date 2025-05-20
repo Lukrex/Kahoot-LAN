@@ -73,8 +73,18 @@ namespace KahootLAN
             {
                 int byteCount = await stream.ReadAsync(buffer, 0, buffer.Length);
                 string message = Encoding.UTF8.GetString(buffer, 0, byteCount);
-                // Handle incoming messages here (e.g., quiz answers)
-                Console.WriteLine($"Received from client: {message}");
+
+                if (message.StartsWith("ANSWER"))
+                {
+                    string clientName = tcpClient.Client.RemoteEndPoint.ToString();
+                    int answer = int.Parse(message.Split('|')[1]);
+
+                    if (!playerScores.ContainsKey(clientName))
+                        playerScores[clientName] = 0;
+
+                    if (answer == questions[currentQuestionIndex].CorrectIndex)
+                        playerScores[clientName] += 10; // Award points for correct answer
+                }
             }
         }
 
@@ -197,6 +207,25 @@ namespace KahootLAN
             checkBox2.Text = question.Options[1];
             checkBox3.Text = question.Options[2];
             checkBox4.Text = question.Options[3];
+        }
+
+        private void btnSubmit_Click(object sender, EventArgs e)
+        {
+            int selectedAnswer = -1;
+            if (checkBox1.Checked) selectedAnswer = 0;
+            else if (checkBox2.Checked) selectedAnswer = 1;
+            else if (checkBox3.Checked) selectedAnswer = 2;
+            else if (checkBox4.Checked) selectedAnswer = 3;
+
+            if (selectedAnswer == -1)
+            {
+                MessageBox.Show("Please select an answer!");
+                return;
+            }
+
+            string message = $"ANSWER|{selectedAnswer}";
+            var msg = Encoding.UTF8.GetBytes(message);
+            stream.WriteAsync(msg, 0, msg.Length);
         }
 
     }

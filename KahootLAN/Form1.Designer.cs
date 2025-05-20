@@ -227,10 +227,9 @@
             this.btnSubmit.Size = new System.Drawing.Size(100, 30);
             this.btnSubmit.TabIndex = 3;
             this.btnSubmit.Text = "Submit";
-            this.btnSubmit.UseVisualStyleBackColor = true;
+            this.btnSubmit.UseVisualStyleBackColor = false;
             this.btnSubmit.Visible = false;
             this.btnSubmit.Click += new System.EventHandler(this.btnSubmit_Click);
-            this.panel3.Controls.Add(this.btnSubmit);
             // 
             // btnNextQuestion
             // 
@@ -242,7 +241,6 @@
             this.btnNextQuestion.UseVisualStyleBackColor = true;
             this.btnNextQuestion.Visible = false;
             this.btnNextQuestion.Click += new System.EventHandler(this.btnNextQuestion_Click);
-            this.panel3.Controls.Add(this.btnNextQuestion);
             // 
             // Form1
             // 

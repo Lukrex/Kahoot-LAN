@@ -214,10 +214,12 @@ namespace KahootLAN
             checkBox2.Text = question.Options[1];
             checkBox3.Text = question.Options[2];
             checkBox4.Text = question.Options[3];
+            btnSubmit.BackColor = System.Drawing.Color.White;
         }
 
         private void btnSubmit_Click(object sender, EventArgs e)
         {
+            btnSubmit.BackColor = System.Drawing.Color.Lime;
             int selectedAnswer = -1;
             if (checkBox1.Checked) selectedAnswer = 0;
             else if (checkBox2.Checked) selectedAnswer = 1;
@@ -237,7 +239,7 @@ namespace KahootLAN
 
         private void btnNextQuestion_Click(object sender, EventArgs e)
         {
-            // Show leaderboard
+            // Show sorted leaderboard
             var leaderboard = string.Join("\n", playerScores.OrderByDescending(p => p.Value)
                 .Select(p => $"{p.Key}: {p.Value} points"));
 

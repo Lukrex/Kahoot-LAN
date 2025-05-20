@@ -182,8 +182,15 @@ namespace KahootLAN
             panel2.Visible = false;
             panel3.Visible = true;
 
+            // Set button visibility based on host or client
+            btnNextQuestion.Visible = isHost;
+            btnSubmit.Visible = !isHost;
+
             // Send the first question to all clients
-            SendQuestionToClients();
+            if (isHost)
+            {
+                SendQuestionToClients();
+            }
 
             // Display the first question for the host
             DisplayQuestion(questions[currentQuestionIndex]);

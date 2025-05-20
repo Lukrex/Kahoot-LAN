@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -16,6 +18,14 @@ namespace KahootLAN
         private NetworkStream stream;
         private const int port = 12345;
         private bool isHost = false;
+        private List<(string Question, string[] Options, int CorrectIndex)> questions = new List<(string, string[], int)>
+        {
+            ("What is 2 + 2?", new[] { "3", "4", "5", "6" }, 1),
+            ("What is the capital of France?", new[] { "Berlin", "Madrid", "Paris", "Rome" }, 2),
+            ("Which planet is known as the Red Planet?", new[] { "Earth", "Mars", "Jupiter", "Venus" }, 1)
+        };
+        private int currentQuestionIndex = 0;
+        private Dictionary<string, int> playerScores = new Dictionary<string, int>();
 
         public Form1()
         {
@@ -107,6 +117,22 @@ namespace KahootLAN
                         StartQuiz();
                     }));
                 }
+                else if (message.StartsWith("QUESTION"))
+                {
+                    string[] parts = message.Split('|');
+                    string question = parts[1];
+                    string[] options = parts.Skip(2).ToArray();
+
+                    Invoke((Action)(() =>
+                    {
+                        DisplayQuestion((question, options, -1)); // -1 because clients don't know the correct answer
+                    }));
+                }
+                else if (message.StartsWith("LEADERBOARD"))
+                {
+                    string leaderboard = message.Substring("LEADERBOARD|".Length);
+                    MessageBox.Show($"Leaderboard:\n{leaderboard}");
+                }
                 else
                 {
                     Console.WriteLine($"Server says: {message}");
@@ -143,18 +169,35 @@ namespace KahootLAN
         }
         private void StartQuiz()
         {
-            // Hide the current panel and show the quiz panel
             panel2.Visible = false;
             panel3.Visible = true;
 
-            // Initialize the quiz (e.g., load the first question)
-            label3.Text = "Question 1: What is 2 + 2?";
-            checkBox1.Text = "3";
-            checkBox2.Text = "4";
-            checkBox3.Text = "5";
-            checkBox4.Text = "6";
+            // Send the first question to all clients
+            SendQuestionToClients();
+
+            // Display the first question for the host
+            DisplayQuestion(questions[currentQuestionIndex]);
         }
 
+        private void SendQuestionToClients()
+        {
+            var question = questions[currentQuestionIndex];
+            string message = $"QUESTION|{question.Question}|{string.Join("|", question.Options)}";
+            foreach (var cl in clients)
+            {
+                var msg = Encoding.UTF8.GetBytes(message);
+                cl.GetStream().WriteAsync(msg, 0, msg.Length);
+            }
+        }
+
+        private void DisplayQuestion((string Question, string[] Options, int CorrectIndex) question)
+        {
+            label3.Text = question.Question;
+            checkBox1.Text = question.Options[0];
+            checkBox2.Text = question.Options[1];
+            checkBox3.Text = question.Options[2];
+            checkBox4.Text = question.Options[3];
+        }
 
     }
 

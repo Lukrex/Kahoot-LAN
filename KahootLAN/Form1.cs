@@ -26,6 +26,8 @@ namespace KahootLAN
         };
         private int currentQuestionIndex = 0;
         private Dictionary<string, int> playerScores = new Dictionary<string, int>();
+        private string nickname;
+        private Dictionary<string, string> clientNicknames = new Dictionary<string, string>();
 
         public Form1()
         {
@@ -55,12 +57,6 @@ namespace KahootLAN
                 TcpClient newClient = await server.AcceptTcpClientAsync();
                 clients.Add(newClient);
 
-                // Update the listBox1 with the new client
-                Invoke((Action)(() =>
-                {
-                    listBox1.Items.Add($"Client {clients.Count} connected");
-                }));
-
                 _ = ReceiveFromClientAsync(newClient); // fire and forget
             }
         }
@@ -69,21 +65,33 @@ namespace KahootLAN
         {
             var buffer = new byte[1024];
             var stream = tcpClient.GetStream();
+            string clientIP = tcpClient.Client.RemoteEndPoint.ToString();
+
             while (tcpClient.Connected)
             {
                 int byteCount = await stream.ReadAsync(buffer, 0, buffer.Length);
                 string message = Encoding.UTF8.GetString(buffer, 0, byteCount);
 
-                if (message.StartsWith("ANSWER"))
+                if (message.StartsWith("NICKNAME"))
                 {
-                    string clientName = tcpClient.Client.RemoteEndPoint.ToString();
+                    string nickname = message.Split('|')[1];
+                    clientNicknames[clientIP] = nickname;
+
+                    // Update the listBox1 with the new client nickname
+                    Invoke((Action)(() =>
+                    {
+                        listBox1.Items.Add($"{nickname} connected");
+                    }));
+                }
+                else if (message.StartsWith("ANSWER"))
+                {
                     int answer = int.Parse(message.Split('|')[1]);
 
-                    if (!playerScores.ContainsKey(clientName))
-                        playerScores[clientName] = 0;
+                    if (!playerScores.ContainsKey(clientIP))
+                        playerScores[clientIP] = 0;
 
                     if (answer == questions[currentQuestionIndex].CorrectIndex)
-                        playerScores[clientName] += 10; // Award points for correct answer
+                        playerScores[clientIP] += 10; // Award points for correct answer
                 }
             }
         }
@@ -94,20 +102,37 @@ namespace KahootLAN
             panel1.Visible = false;
             panel2.Visible = true;
 
+            // Prompt for nickname
+            nickname = Prompt.ShowDialog("Enter your nickname:", "Set Nickname");
+            if (string.IsNullOrWhiteSpace(nickname))
+            {
+                MessageBox.Show("Nickname cannot be empty!");
+                panel1.Visible = true;
+                panel2.Visible = false;
+                return;
+            }
+
             // Ensure the Start Quiz button is hidden for clients
             btnStartQuiz.Visible = false;
 
+            // Prompt for host IP
             string ip = Prompt.ShowDialog("Enter Host IP:", "Join Game");
             client = new TcpClient();
             await client.ConnectAsync(IPAddress.Parse(ip), port);
             stream = client.GetStream();
+
+            // Send the nickname to the host
+            string message = $"NICKNAME|{nickname}";
+            var msg = Encoding.UTF8.GetBytes(message);
+            await stream.WriteAsync(msg, 0, msg.Length);
+
             _ = ReceiveFromServerAsync();
             MessageBox.Show("Connected to server!");
 
             // Update the listBox1 for the client
             Invoke((Action)(() =>
             {
-                listBox1.Items.Add("You are connected to the server.");
+                listBox1.Items.Add($"You are connected as {nickname}.");
             }));
         }
 
@@ -142,6 +167,14 @@ namespace KahootLAN
                 {
                     string leaderboard = message.Substring("LEADERBOARD|".Length);
                     MessageBox.Show($"Leaderboard:\n{leaderboard}");
+                }
+                else if (message == "RESET")
+                {
+                    // Reset the client state
+                    Invoke((Action)(() =>
+                    {
+                        ResetQuiz();
+                    }));
                 }
                 else
                 {
@@ -241,7 +274,11 @@ namespace KahootLAN
         {
             // Show sorted leaderboard
             var leaderboard = string.Join("\n", playerScores.OrderByDescending(p => p.Value)
-                .Select(p => $"{p.Key}: {p.Value} points"));
+                .Select(p =>
+                {
+                    string nickname = clientNicknames.ContainsKey(p.Key) ? clientNicknames[p.Key] : p.Key;
+                    return $"{nickname}: {p.Value} points";
+                }));
 
             foreach (var cl in clients)
             {
@@ -251,7 +288,7 @@ namespace KahootLAN
 
             MessageBox.Show($"Leaderboard:\n{leaderboard}");
 
-            // Move to the next question
+            // Move to the next question or end the quiz
             currentQuestionIndex++;
             if (currentQuestionIndex < questions.Count)
             {
@@ -261,9 +298,61 @@ namespace KahootLAN
             else
             {
                 MessageBox.Show("Quiz finished!");
-                panel3.Visible = false;
-                panel2.Visible = true;
+
+                // Notify clients to reset
+                foreach (var cl in clients)
+                {
+                    var msg = Encoding.UTF8.GetBytes("RESET");
+                    cl.GetStream().WriteAsync(msg, 0, msg.Length);
+                }
+
+                // Reset the host state
+                ResetQuiz();
             }
+        }
+
+        private void ResetQuiz()
+        {
+            // Reset panels
+            panel1.Visible = true;
+            panel2.Visible = false;
+            panel3.Visible = false;
+
+            // Clear UI elements
+            listBox1.Items.Clear();
+            label3.Text = string.Empty;
+            checkBox1.Text = string.Empty;
+            checkBox2.Text = string.Empty;
+            checkBox3.Text = string.Empty;
+            checkBox4.Text = string.Empty;
+            checkBox1.Checked = false;
+            checkBox2.Checked = false;
+            checkBox3.Checked = false;
+            checkBox4.Checked = false;
+
+            // Reset quiz state
+            currentQuestionIndex = 0;
+            playerScores.Clear();
+            clientNicknames.Clear();
+
+            // Reset host and client state
+            if (isHost)
+            {
+                foreach (var cl in clients)
+                {
+                    cl.Close();
+                }
+                clients.Clear();
+                server?.Stop();
+            }
+            else
+            {
+                client?.Close();
+                stream = null;
+            }
+
+            isHost = false;
+            nickname = null;
         }
 
     }

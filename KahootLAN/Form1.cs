@@ -61,6 +61,8 @@ namespace KahootLAN
         private async void btnJoin_Click_1(object sender, EventArgs e)
         {
             isHost = false;
+            panel1.Visible=false;
+            panel3.Visible=true;
             string ip = Prompt.ShowDialog("Enter Host IP:", "Join Game");
             client = new TcpClient();
             await client.ConnectAsync(IPAddress.Parse(ip), port);
@@ -103,6 +105,8 @@ namespace KahootLAN
             }
             throw new Exception("No network adapters with an IPv4 address in the system!");
         }
+
+
     }
 
     // Helper for input dialog

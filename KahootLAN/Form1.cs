@@ -54,10 +54,22 @@ namespace KahootLAN
         {
             while (true)
             {
-                TcpClient newClient = await server.AcceptTcpClientAsync();
-                clients.Add(newClient);
+                try
+                {
+                    if (!server.Server.IsBound)
+                    {
+                        break; // Exit the loop if the server is no longer active
+                    }
 
-                _ = ReceiveFromClientAsync(newClient); // fire and forget
+                    TcpClient newClient = await server.AcceptTcpClientAsync();
+                    clients.Add(newClient);
+
+                    _ = ReceiveFromClientAsync(newClient); // fire and forget
+                }
+                catch (ObjectDisposedException)
+                {
+                    break; // Exit the loop if the server is disposed
+                }
             }
         }
 

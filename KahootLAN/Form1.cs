@@ -203,12 +203,14 @@ namespace KahootLAN
             var host = Dns.GetHostEntry(Dns.GetHostName());
             foreach (var ip in host.AddressList)
             {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                if (ip.AddressFamily == AddressFamily.InterNetwork &&
+                    (ip.ToString().StartsWith("192.168.") || ip.ToString().StartsWith("10.") ||
+                     ip.ToString().StartsWith("172.")) )
                 {
                     return ip.ToString();
                 }
             }
-            throw new Exception("No network adapters with an IPv4 address in the system!");
+            throw new Exception("No local network adapters with an IPv4 address in the private(LAN) range were found.");
         }
         private void StartQuiz()
         {

@@ -42,6 +42,7 @@ namespace KahootLAN
 
             btnLoadQuestions.Visible = true;
             btnStartQuiz.Visible = true;
+            button1.Visible = true;
 
             string ip = GetLocalIPAddress();
             MessageBox.Show($"Server started at {ip}:{port}");
@@ -126,9 +127,11 @@ namespace KahootLAN
 
             // Ensure the Start Quiz button is hidden for clients
             btnStartQuiz.Visible = false;
+            btnLoadQuestions.Visible = false;
+            button1.Visible = false;
 
             // Prompt for host IP
-            string ip = Prompt.ShowDialog("Enter Host IP:", "Join Game");
+            string ip = Prompt.ShowDialog("Enter Host IP (X.X.X.X):", "Join Game");
             client = new TcpClient();
             await client.ConnectAsync(IPAddress.Parse(ip), port);
             stream = client.GetStream();

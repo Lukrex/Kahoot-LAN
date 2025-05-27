@@ -289,6 +289,12 @@ namespace KahootLAN
 
         private void btnNextQuestion_Click(object sender, EventArgs e)
         {
+            // Uncheck all checkboxes
+            checkBox1.Checked = false;
+            checkBox2.Checked = false;
+            checkBox3.Checked = false;
+            checkBox4.Checked = false;
+
             // Show sorted leaderboard
             var leaderboard = string.Join("\n", playerScores.OrderByDescending(p => p.Value)
                 .Select(p =>

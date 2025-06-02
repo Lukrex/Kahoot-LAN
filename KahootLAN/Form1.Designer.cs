@@ -50,6 +50,7 @@ namespace KahootLAN
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.btnSubmit = new System.Windows.Forms.Button();
             this.btnNextQuestion = new System.Windows.Forms.Button();
+            this.panel4 = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -60,10 +61,9 @@ namespace KahootLAN
             // 
             this.btnHost.BackColor = System.Drawing.Color.White;
             this.btnHost.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnHost.Location = new System.Drawing.Point(279, 180);
-            this.btnHost.Margin = new System.Windows.Forms.Padding(2);
+            this.btnHost.Location = new System.Drawing.Point(418, 277);
             this.btnHost.Name = "btnHost";
-            this.btnHost.Size = new System.Drawing.Size(56, 28);
+            this.btnHost.Size = new System.Drawing.Size(84, 43);
             this.btnHost.TabIndex = 0;
             this.btnHost.Text = "Host";
             this.btnHost.UseVisualStyleBackColor = false;
@@ -72,10 +72,9 @@ namespace KahootLAN
             // btnJoin
             // 
             this.btnJoin.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnJoin.Location = new System.Drawing.Point(279, 212);
-            this.btnJoin.Margin = new System.Windows.Forms.Padding(2);
+            this.btnJoin.Location = new System.Drawing.Point(418, 326);
             this.btnJoin.Name = "btnJoin";
-            this.btnJoin.Size = new System.Drawing.Size(56, 30);
+            this.btnJoin.Size = new System.Drawing.Size(84, 46);
             this.btnJoin.TabIndex = 1;
             this.btnJoin.Text = "Join";
             this.btnJoin.UseVisualStyleBackColor = true;
@@ -84,10 +83,9 @@ namespace KahootLAN
             // btnStartQuiz
             // 
             this.btnStartQuiz.Font = new System.Drawing.Font("Arial Black", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnStartQuiz.Location = new System.Drawing.Point(255, 251);
-            this.btnStartQuiz.Margin = new System.Windows.Forms.Padding(2);
+            this.btnStartQuiz.Location = new System.Drawing.Point(382, 386);
             this.btnStartQuiz.Name = "btnStartQuiz";
-            this.btnStartQuiz.Size = new System.Drawing.Size(112, 41);
+            this.btnStartQuiz.Size = new System.Drawing.Size(168, 63);
             this.btnStartQuiz.TabIndex = 2;
             this.btnStartQuiz.Text = "Start Quiz";
             this.btnStartQuiz.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -103,8 +101,9 @@ namespace KahootLAN
             this.panel1.Controls.Add(this.btnHost);
             this.panel1.Controls.Add(this.btnJoin);
             this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(600, 367);
+            this.panel1.Size = new System.Drawing.Size(900, 565);
             this.panel1.TabIndex = 3;
             // 
             // label1
@@ -112,9 +111,10 @@ namespace KahootLAN
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Font = new System.Drawing.Font("Arial Black", 48F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(107, 74);
+            this.label1.Location = new System.Drawing.Point(160, 114);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(402, 104);
+            this.label1.Size = new System.Drawing.Size(603, 160);
             this.label1.TabIndex = 2;
             this.label1.Text = "KAHOOT";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -128,18 +128,18 @@ namespace KahootLAN
             this.panel2.Controls.Add(this.btnStartQuiz);
             this.panel2.Controls.Add(this.btnLoadQuestions);
             this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(600, 368);
+            this.panel2.Size = new System.Drawing.Size(900, 566);
             this.panel2.TabIndex = 4;
             this.panel2.Visible = false;
             // 
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Arial Black", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button1.Location = new System.Drawing.Point(159, 296);
-            this.button1.Margin = new System.Windows.Forms.Padding(2);
+            this.button1.Location = new System.Drawing.Point(238, 455);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(90, 24);
+            this.button1.Size = new System.Drawing.Size(135, 37);
             this.button1.TabIndex = 7;
             this.button1.Text = "Make test";
             this.button1.UseVisualStyleBackColor = true;
@@ -152,9 +152,10 @@ namespace KahootLAN
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Font = new System.Drawing.Font("Arial Black", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(110, 9);
+            this.label2.Location = new System.Drawing.Point(165, 14);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(410, 68);
+            this.label2.Size = new System.Drawing.Size(615, 101);
             this.label2.TabIndex = 5;
             this.label2.Text = "Pripojení hráči";
             // 
@@ -165,19 +166,19 @@ namespace KahootLAN
             this.listBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.listBox1.ForeColor = System.Drawing.Color.White;
             this.listBox1.FormattingEnabled = true;
-            this.listBox1.ItemHeight = 16;
-            this.listBox1.Location = new System.Drawing.Point(159, 82);
+            this.listBox1.ItemHeight = 25;
+            this.listBox1.Location = new System.Drawing.Point(238, 126);
+            this.listBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(301, 160);
+            this.listBox1.Size = new System.Drawing.Size(452, 225);
             this.listBox1.TabIndex = 4;
             // 
             // btnLoadQuestions
             // 
             this.btnLoadQuestions.Font = new System.Drawing.Font("Arial Black", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnLoadQuestions.Location = new System.Drawing.Point(370, 296);
-            this.btnLoadQuestions.Margin = new System.Windows.Forms.Padding(2);
+            this.btnLoadQuestions.Location = new System.Drawing.Point(555, 455);
             this.btnLoadQuestions.Name = "btnLoadQuestions";
-            this.btnLoadQuestions.Size = new System.Drawing.Size(90, 24);
+            this.btnLoadQuestions.Size = new System.Drawing.Size(135, 37);
             this.btnLoadQuestions.TabIndex = 6;
             this.btnLoadQuestions.Text = "Load Test";
             this.btnLoadQuestions.UseVisualStyleBackColor = true;
@@ -196,15 +197,17 @@ namespace KahootLAN
             this.panel3.Controls.Add(this.btnSubmit);
             this.panel3.Controls.Add(this.btnNextQuestion);
             this.panel3.Location = new System.Drawing.Point(0, 0);
+            this.panel3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(600, 336);
+            this.panel3.Size = new System.Drawing.Size(900, 517);
             this.panel3.TabIndex = 3;
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(225, 68);
+            this.pictureBox1.Location = new System.Drawing.Point(338, 105);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(149, 94);
+            this.pictureBox1.Size = new System.Drawing.Size(224, 145);
             this.pictureBox1.TabIndex = 8;
             this.pictureBox1.TabStop = false;
             // 
@@ -213,9 +216,10 @@ namespace KahootLAN
             this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.Font = new System.Drawing.Font("Arial Black", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(0, 24);
+            this.label3.Location = new System.Drawing.Point(0, 37);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(600, 41);
+            this.label3.Size = new System.Drawing.Size(900, 63);
             this.label3.TabIndex = 7;
             this.label3.Text = "Znenie otázky";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -226,9 +230,10 @@ namespace KahootLAN
             this.checkBox4.BackColor = System.Drawing.Color.Transparent;
             this.checkBox4.Font = new System.Drawing.Font("Arial Black", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkBox4.ForeColor = System.Drawing.Color.White;
-            this.checkBox4.Location = new System.Drawing.Point(380, 215);
+            this.checkBox4.Location = new System.Drawing.Point(570, 331);
+            this.checkBox4.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(109, 22);
+            this.checkBox4.Size = new System.Drawing.Size(157, 32);
             this.checkBox4.TabIndex = 6;
             this.checkBox4.Text = "checkBox4";
             this.checkBox4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -240,9 +245,10 @@ namespace KahootLAN
             this.checkBox3.BackColor = System.Drawing.Color.Transparent;
             this.checkBox3.Font = new System.Drawing.Font("Arial Black", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.checkBox3.ForeColor = System.Drawing.Color.White;
-            this.checkBox3.Location = new System.Drawing.Point(380, 171);
+            this.checkBox3.Location = new System.Drawing.Point(570, 263);
+            this.checkBox3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(109, 22);
+            this.checkBox3.Size = new System.Drawing.Size(157, 32);
             this.checkBox3.TabIndex = 5;
             this.checkBox3.Text = "checkBox3";
             this.checkBox3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -254,9 +260,10 @@ namespace KahootLAN
             this.checkBox2.BackColor = System.Drawing.Color.Transparent;
             this.checkBox2.Font = new System.Drawing.Font("Arial Black", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.checkBox2.ForeColor = System.Drawing.Color.White;
-            this.checkBox2.Location = new System.Drawing.Point(144, 215);
+            this.checkBox2.Location = new System.Drawing.Point(216, 331);
+            this.checkBox2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(109, 22);
+            this.checkBox2.Size = new System.Drawing.Size(157, 32);
             this.checkBox2.TabIndex = 4;
             this.checkBox2.Text = "checkBox2";
             this.checkBox2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -268,9 +275,10 @@ namespace KahootLAN
             this.checkBox1.BackColor = System.Drawing.Color.Transparent;
             this.checkBox1.Font = new System.Drawing.Font("Arial Black", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.checkBox1.ForeColor = System.Drawing.Color.White;
-            this.checkBox1.Location = new System.Drawing.Point(144, 171);
+            this.checkBox1.Location = new System.Drawing.Point(216, 263);
+            this.checkBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(109, 22);
+            this.checkBox1.Size = new System.Drawing.Size(157, 32);
             this.checkBox1.TabIndex = 3;
             this.checkBox1.Text = "checkBox1";
             this.checkBox1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -279,10 +287,9 @@ namespace KahootLAN
             // btnSubmit
             // 
             this.btnSubmit.Font = new System.Drawing.Font("Arial Black", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnSubmit.Location = new System.Drawing.Point(255, 268);
-            this.btnSubmit.Margin = new System.Windows.Forms.Padding(2);
+            this.btnSubmit.Location = new System.Drawing.Point(382, 412);
             this.btnSubmit.Name = "btnSubmit";
-            this.btnSubmit.Size = new System.Drawing.Size(104, 34);
+            this.btnSubmit.Size = new System.Drawing.Size(156, 52);
             this.btnSubmit.TabIndex = 3;
             this.btnSubmit.Text = "Submit";
             this.btnSubmit.UseVisualStyleBackColor = false;
@@ -292,25 +299,32 @@ namespace KahootLAN
             // btnNextQuestion
             // 
             this.btnNextQuestion.Font = new System.Drawing.Font("Arial Black", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnNextQuestion.Location = new System.Drawing.Point(207, 268);
-            this.btnNextQuestion.Margin = new System.Windows.Forms.Padding(2);
+            this.btnNextQuestion.Location = new System.Drawing.Point(310, 412);
             this.btnNextQuestion.Name = "btnNextQuestion";
-            this.btnNextQuestion.Size = new System.Drawing.Size(205, 34);
+            this.btnNextQuestion.Size = new System.Drawing.Size(308, 52);
             this.btnNextQuestion.TabIndex = 3;
             this.btnNextQuestion.Text = "Next Question";
             this.btnNextQuestion.UseVisualStyleBackColor = true;
             this.btnNextQuestion.Visible = false;
             this.btnNextQuestion.Click += new System.EventHandler(this.btnNextQuestion_Click);
             // 
+            // panel4
+            // 
+            this.panel4.Location = new System.Drawing.Point(0, 0);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(900, 566);
+            this.panel4.TabIndex = 8;
+            this.panel4.Visible = false;
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(600, 366);
-            this.Controls.Add(this.panel1);
+            this.ClientSize = new System.Drawing.Size(900, 563);
             this.Controls.Add(this.panel2);
+            this.Controls.Add(this.panel4);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel3);
-            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "Form1";
             this.panel1.ResumeLayout(false);
@@ -344,6 +358,7 @@ namespace KahootLAN
         private System.Windows.Forms.Button btnNextQuestion;
         private System.Windows.Forms.Button btnLoadQuestions;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Panel panel4;
     }
 }
 

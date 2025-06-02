@@ -398,7 +398,10 @@ namespace KahootLAN
         }
         private void button1_Click(object sender, EventArgs e)
         {
-
+            panel4.Visible = true;
+            panel1.Visible = false;
+            panel2.Visible = false;
+            panel3.Visible = false;
         }
 
     }

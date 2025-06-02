@@ -401,11 +401,6 @@ namespace KahootLAN
 
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
     }
 
     // Helper for input dialog

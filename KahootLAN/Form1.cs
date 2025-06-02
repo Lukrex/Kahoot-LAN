@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -404,6 +405,50 @@ namespace KahootLAN
             panel3.Visible = false;
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            comboBox1.Visible = false;
+            button2.BackColor = Color.FromArgb(255, 0, 0);
+            button3.BackColor = Color.FromArgb(255, 255, 255);
+        }
+
+        private void panel4_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            comboBox1.Visible = true;
+            button3.BackColor = Color.FromArgb(255, 0, 0);
+            button2.BackColor = Color.FromArgb(255, 255, 255);
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int pocetOtazok = int.Parse(comboBox1.SelectedItem.ToString());
+            if (pocetOtazok == 2)
+            {
+                textBox2.Visible = true;
+                textBox3.Visible = true;
+                textBox4.Visible = false;
+                textBox5.Visible = false;
+            }
+            else if (pocetOtazok == 3)
+            {
+                textBox2.Visible = true;
+                textBox3.Visible = true;
+                textBox4.Visible = true;
+                textBox5.Visible = false;
+            }
+            else if (pocetOtazok == 4)
+            {
+                textBox2.Visible = true;
+                textBox3.Visible = true;
+                textBox4.Visible = true;
+                textBox5.Visible = true;
+            }
+        }
     }
 
     // Helper for input dialog

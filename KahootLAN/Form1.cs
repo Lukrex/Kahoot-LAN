@@ -403,13 +403,16 @@ namespace KahootLAN
             panel1.Visible = false;
             panel2.Visible = false;
             panel3.Visible = false;
+            comboBox1.Visible = false;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             comboBox1.Visible = false;
-            button2.BackColor = Color.FromArgb(255, 0, 0);
-            button3.BackColor = Color.FromArgb(255, 255, 255);
+            button2.BackColor = Color.Black;
+            button2.ForeColor = Color.White;
+            button3.BackColor = Color.White;
+            button3.ForeColor = Color.Black;
             textBox2.Visible = false;
             textBox3.Visible = false;
             textBox4.Visible = false;
@@ -424,8 +427,12 @@ namespace KahootLAN
         private void button3_Click(object sender, EventArgs e)
         {
             comboBox1.Visible = true;
-            button3.BackColor = Color.FromArgb(255, 0, 0);
-            button2.BackColor = Color.FromArgb(255, 255, 255);
+            comboBox1.SelectedIndex = 0;
+            button3.BackColor = Color.Black;
+            button3.ForeColor = Color.White;
+            button2.BackColor = Color.White;
+            button2.ForeColor = Color.Black;
+
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)

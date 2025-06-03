@@ -21,7 +21,7 @@ namespace KahootLAN
         private bool isHost = false;
         private List<(string Question, string[] Options, int CorrectIndex)> questions = new List<(string, string[], int)>
         {
-            ("What is 2 + 2?", new[] { "3", "4", "5", "6" }, 1),
+            ("Koľko je 2 + 2?", new[] { "3", "4", "5", "6" }, 1),
             ("What is the capital of France?", new[] { "Berlin", "Madrid", "Paris", "Rome" }, 2),
             ("Which planet is known as the Red Planet?", new[] { "Earth", "Mars", "Jupiter", "Venus" }, 1)
         };
@@ -496,6 +496,12 @@ namespace KahootLAN
             button7.ForeColor = Color.White;
             button6.BackColor = Color.White;
             button6.ForeColor = Color.Black;
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            string otazka = textBox1.Text;
+            
         }
     }
 

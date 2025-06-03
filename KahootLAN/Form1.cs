@@ -410,6 +410,10 @@ namespace KahootLAN
             comboBox1.Visible = false;
             button2.BackColor = Color.FromArgb(255, 0, 0);
             button3.BackColor = Color.FromArgb(255, 255, 255);
+            textBox2.Visible = false;
+            textBox3.Visible = false;
+            textBox4.Visible = false;
+            textBox5.Visible = false;
         }
 
         private void panel4_Paint(object sender, PaintEventArgs e)

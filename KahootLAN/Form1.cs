@@ -417,6 +417,8 @@ namespace KahootLAN
             textBox3.Visible = false;
             textBox4.Visible = false;
             textBox5.Visible = false;
+            button7.Visible = true;
+            button6.Visible = true;
         }
 
         private void panel4_Paint(object sender, PaintEventArgs e)
@@ -432,6 +434,8 @@ namespace KahootLAN
             button3.ForeColor = Color.White;
             button2.BackColor = Color.White;
             button2.ForeColor = Color.Black;
+            button7.Visible = false;
+            button6.Visible = false;
 
         }
 
@@ -461,7 +465,21 @@ namespace KahootLAN
             }
         }
 
+        private void button6_Click(object sender, EventArgs e)
+        {
+            button6.BackColor = Color.Black;
+            button6.ForeColor = Color.White;
+            button7.BackColor = Color.White;
+            button7.ForeColor = Color.Black;
+        }
 
+        private void button7_Click(object sender, EventArgs e)
+        {
+            button7.BackColor = Color.Black;
+            button7.ForeColor = Color.White;
+            button6.BackColor = Color.White;
+            button6.ForeColor = Color.Black;
+        }
     }
 
     // Helper for input dialog

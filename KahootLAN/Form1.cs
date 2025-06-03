@@ -17,7 +17,7 @@ namespace KahootLAN
         private List<TcpClient> clients = new List<TcpClient>();
         private TcpClient client;
         private NetworkStream stream;
-        private const int port = 12345;
+        private const int port = 55413;
         private bool isHost = false;
         private List<(string Question, string[] Options, int CorrectIndex)> questions = new List<(string, string[], int)>
         {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -13,6 +14,11 @@ namespace KahootLAN
 {
     public partial class Form1 : Form
     {
+        string file = "C:\\Users\\PC\\Desktop\\otazky.txt";
+        int anoNie = 0;
+        int viacOtazok = 0;
+        int pocetOtazok = 0;
+        string otazka = null;
         private TcpListener server;
         private List<TcpClient> clients = new List<TcpClient>();
         private TcpClient client;
@@ -425,6 +431,8 @@ namespace KahootLAN
 
         private void button2_Click(object sender, EventArgs e)
         {
+            anoNie = 1;
+            viacOtazok = 0;
             comboBox1.Visible = false;
             button2.BackColor = Color.Black;
             button2.ForeColor = Color.White;
@@ -453,12 +461,13 @@ namespace KahootLAN
             button2.ForeColor = Color.Black;
             button7.Visible = false;
             button6.Visible = false;
-
+            anoNie = 0;
+            viacOtazok = 1;
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int pocetOtazok = int.Parse(comboBox1.SelectedItem.ToString());
+            pocetOtazok = int.Parse(comboBox1.SelectedItem.ToString());
             if (pocetOtazok == 2)
             {
                 textBox2.Visible = true;
@@ -500,27 +509,44 @@ namespace KahootLAN
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            string otazka = textBox1.Text;
-            
+            otazka = textBox1.Text;
         }
-    }
 
-    // input dialóg
-    public static class Prompt
-    {
-        public static string ShowDialog(string text, string caption)
+        private void button4_Click(object sender, EventArgs e)
         {
-            Form prompt = new Form() { Width = 400, Height = 150, Text = caption };
-            Label textLabel = new Label() { Left = 50, Top = 20, Text = text, Width = 300 };
-            TextBox textBox = new TextBox() { Left = 50, Top = 50, Width = 300 };
-            Button confirmation = new Button() { Text = "OK", Left = 250, Width = 100, Top = 80 };
-            confirmation.Click += (sender, e) => { prompt.Close(); };
-            prompt.Controls.Add(textLabel);
-            prompt.Controls.Add(textBox);
-            prompt.Controls.Add(confirmation);
-            prompt.AcceptButton = confirmation;
-            prompt.ShowDialog();
-            return textBox.Text;
+            if (anoNie == 1)
+            {
+                File.AppendAllText(file, "Ano/Nie " + textBox1.Text + "\n");
+            }
+            else if (viacOtazok == 1)
+            {
+                File.AppendAllText(file, "ViacOtazok " + textBox1.Text + "\n");
+            }
+            else
+            {
+                MessageBox.Show("Vyber typ otázky");
+            }
+            textBox1.Clear();
+        }
+
+
+        // input dialóg
+        public static class Prompt
+        {
+            public static string ShowDialog(string text, string caption)
+            {
+                Form prompt = new Form() { Width = 400, Height = 150, Text = caption };
+                Label textLabel = new Label() { Left = 50, Top = 20, Text = text, Width = 300 };
+                TextBox textBox = new TextBox() { Left = 50, Top = 50, Width = 300 };
+                Button confirmation = new Button() { Text = "OK", Left = 250, Width = 100, Top = 80 };
+                confirmation.Click += (sender, e) => { prompt.Close(); };
+                prompt.Controls.Add(textLabel);
+                prompt.Controls.Add(textBox);
+                prompt.Controls.Add(confirmation);
+                prompt.AcceptButton = confirmation;
+                prompt.ShowDialog();
+                return textBox.Text;
+            }
         }
     }
 }

@@ -453,6 +453,8 @@ namespace KahootLAN
                 textBox5.Visible = true;
             }
         }
+
+
     }
 
     // Helper for input dialog

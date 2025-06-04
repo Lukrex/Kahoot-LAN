@@ -516,11 +516,11 @@ namespace KahootLAN
         {
             if (anoNie == 1)
             {
-                File.AppendAllText(file, "Ano/Nie " + textBox1.Text + "\n");
+                File.AppendAllText(file, textBox1.Text + "\n");
             }
             else if (viacOtazok == 1)
             {
-                File.AppendAllText(file, "ViacOtazok " + textBox1.Text + "\n");
+                File.AppendAllText(file, textBox1.Text + "\n");
             }
             else
             {

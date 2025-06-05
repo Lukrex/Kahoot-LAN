@@ -326,29 +326,29 @@ namespace KahootLAN
                 return;
             }
 
-            // Shuffle the options
-            List<int> indices = new List<int> { 0, 1, 2, 3 };
+            // Shuffle the options and update the correct index
+            string[] shuffledOptions = question.Options.ToArray();
+            int originalCorrectIndex = question.CorrectIndex;
             Random random = new Random();
-            for (int i = indices.Count - 1; i > 0; i--)
+            int newCorrectIndex = originalCorrectIndex;
+
+            for (int i = shuffledOptions.Length - 1; i > 0; i--)
             {
                 int j = random.Next(i + 1);
-                int temp = indices[i];
-                indices[i] = indices[j];
-                indices[j] = temp;
-            }
 
-            string[] shuffledOptions = new string[4];
-            int newCorrectIndex = -1;
+                // Swap options
+                string temp = shuffledOptions[i];
+                shuffledOptions[i] = shuffledOptions[j];
+                shuffledOptions[j] = temp;
 
-            for (int i = 0; i < indices.Count; i++)
-            {
-                shuffledOptions[i] = question.Options[indices[i]];
-                if (indices[i] == question.CorrectIndex)
-                {
+                // Update the correct index if it was swapped
+                if (i == newCorrectIndex)
+                    newCorrectIndex = j;
+                else if (j == newCorrectIndex)
                     newCorrectIndex = i;
-                }
             }
 
+            // Update the question with shuffled options and the new correct index
             question = (question.Question, shuffledOptions, newCorrectIndex);
 
             // Set the question and options
@@ -372,7 +372,6 @@ namespace KahootLAN
 
                 Console.WriteLine($"Checkbox {i}: Text='{checkBoxes[i].Text}', Visible={checkBoxes[i].Visible}");
             }
-
 
             // Reset button color
             btnSubmit.BackColor = System.Drawing.Color.White;

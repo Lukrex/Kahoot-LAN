@@ -263,10 +263,8 @@ namespace KahootLAN
 
         private void DisplayQuestion((string Question, string[] Options, int CorrectIndex) question)
         {
-            // Nastaví otázku a možnosti
+            // Shuffle the options
             List<int> indices = new List<int> { 0, 1, 2, 3 };
-
-            // Shuffle the indices using a random number generator
             Random random = new Random();
             for (int i = indices.Count - 1; i > 0; i--)
             {
@@ -276,44 +274,45 @@ namespace KahootLAN
                 indices[j] = temp;
             }
 
-            // Create a new array for shuffled options
             string[] shuffledOptions = new string[4];
             int newCorrectIndex = -1;
 
             for (int i = 0; i < indices.Count; i++)
             {
                 shuffledOptions[i] = question.Options[indices[i]];
-
-                // Update the correct index if the current option is the correct one
                 if (indices[i] == question.CorrectIndex)
                 {
                     newCorrectIndex = i;
                 }
             }
 
-            // Update the question with shuffled options and the new correct index
             question = (question.Question, shuffledOptions, newCorrectIndex);
 
-            // Set the shuffled options in the UI
-            checkBox1.Text = question.Options[0];
-            checkBox2.Text = question.Options[1];
-            checkBox3.Text = question.Options[2];
-            checkBox4.Text = question.Options[3];
+            // Set the question and options
             label3.Text = question.Question;
 
-            // Resetuje checkboxy
-            checkBox1.Checked = false;
-            checkBox2.Checked = false;
-            checkBox3.Checked = false;
-            checkBox4.Checked = false;
+            // Update checkboxes
+            CheckBox[] checkBoxes = { checkBox1, checkBox2, checkBox3, checkBox4 };
+            for (int i = 0; i < checkBoxes.Length; i++)
+            {
+                if (i < question.Options.Length && !string.IsNullOrEmpty(question.Options[i]))
+                {
+                    checkBoxes[i].Text = question.Options[i];
+                    checkBoxes[i].Visible = true;
+                }
+                else
+                {
+                    checkBoxes[i].Text = string.Empty;
+                    checkBoxes[i].Visible = false;
+                }
+                checkBoxes[i].Checked = false;
+            }
 
-            // Resetuje farbu tlačidla
+            // Reset button color
             btnSubmit.BackColor = System.Drawing.Color.White;
 
-            // labelik: na ktorej som otázke
+            // Update question number label
             lblQuestionNumber.Text = $"{currentQuestionIndex + 1}/{questions.Count}";
-
-
         }
 
         private void btnSubmit_Click(object sender, EventArgs e)

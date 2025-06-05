@@ -656,6 +656,7 @@ namespace KahootLAN
                     {
                         MessageBox.Show($"Invalid correct index in line: {line}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+
                 }
             }
             catch (Exception ex)

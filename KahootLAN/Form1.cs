@@ -25,12 +25,7 @@ namespace KahootLAN
         private NetworkStream stream;
         private const int port = 55413;
         private bool isHost = false;
-        private List<(string Question, string[] Options, int CorrectIndex)> questions = new List<(string, string[], int)>
-        {
-            ("Koľko je 2 + 2?", new[] { "3", "4", "5", "6" }, 1),
-            ("What is the capital of France?", new[] { "Berlin", "Madrid", "Paris", "Rome" }, 2),
-            ("Which planet is known as the Red Planet?", new[] { "Earth", "Mars", "Jupiter", "Venus" }, 1)
-        };
+        private List<(string Question, string[] Options, int CorrectIndex)> questions = new List<(string, string[], int)>{};
         private int currentQuestionIndex = 0;
         private Dictionary<string, int> playerScores = new Dictionary<string, int>();
         private string nickname;
@@ -56,6 +51,7 @@ namespace KahootLAN
             server = new TcpListener(IPAddress.Any, port);
             server.Start();
             await AcceptClientsAsync();
+
         }
 
         private async Task AcceptClientsAsync()
@@ -258,7 +254,7 @@ namespace KahootLAN
             var question = questions[currentQuestionIndex];
             string message = $"QUESTION|{question.Question}|{string.Join("|", question.Options)}";
             foreach (var cl in clients)
-            {
+            { 
                 var msg = Encoding.UTF8.GetBytes(message);
                 cl.GetStream().WriteAsync(msg, 0, msg.Length);
             }
@@ -319,7 +315,7 @@ namespace KahootLAN
                 .Select(p =>
                 {
                     string nickname = clientNicknames.ContainsKey(p.Key) ? clientNicknames[p.Key] : p.Key;
-                    return $"{nickname}: {p.Value} points";
+                    return $"{nickname}: {p.Value} points"; ;
                 }));
 
             foreach (var cl in clients)
@@ -414,7 +410,7 @@ namespace KahootLAN
                     string filePath = openFileDialog.FileName;
                     MessageBox.Show($"Vybraný súbor: {filePath}");
 
-                    // logika na čítanie otázok zo súboru príde neskôr
+                    LoadQuestionsFromFile(filePath);
                 }
             }
         }
@@ -507,9 +503,48 @@ namespace KahootLAN
             button6.ForeColor = Color.Black;
         }
 
+        private void LoadQuestionsFromFile(string filePath)
+        {
+            try
+            {
+                // vybraný súbor
+                var lines = System.IO.File.ReadAllLines(filePath);
+                foreach (var line in lines)
+                {
+                    var parts = line.Split('|');
+                    if (parts.Length >= 3) //overenie či je spravne napisany riadok
+                    {
+                        // format suboru:
+                        // Otazka|prva,druha,tretia|2
+                        // druhaOtazka|prva,druha|0
+                        // IF na menej otazok
+
+                        string question = parts[0];
+                        string[] options = parts[1].Split(',');
+                        if (int.TryParse(parts[2], out int correctIndex) && correctIndex >= 0 && correctIndex < options.Length) //overenie či je spravne napisany riadok
+                        {
+                            questions.Add((question, options, correctIndex));
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Invalid correct index in line: {line}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Invalid format in line: {line}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading questions: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            otazka = textBox1.Text;
+         
         }
 
         private void button4_Click(object sender, EventArgs e)

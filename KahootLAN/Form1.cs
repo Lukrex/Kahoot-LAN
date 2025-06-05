@@ -165,21 +165,42 @@ namespace KahootLAN
 
                 if (message == "START_QUIZ")
                 {
-                    // Spustí kvíz pre klienta
                     Invoke((Action)(() =>
                     {
+                        Console.WriteLine("Quiz Start received on client.");
                         StartQuiz();
                     }));
+                }
+                else if (message.StartsWith("ALL_QUESTIONS"))
+                {
+                    string[] parts = message.Split('|');
+                    if (parts.Length < 4)
+                    {
+                        MessageBox.Show("Invalid question format received from server.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        continue;
+                    }
+
+                    string question = parts[1];
+                    string[] options = parts.Skip(2).Take(parts.Length - 3).ToArray();
+                    int correctIndex = int.Parse(parts[parts.Length - 1]);
+
+                    questions.Add((question, options, correctIndex));
                 }
                 else if (message.StartsWith("QUESTION"))
                 {
                     string[] parts = message.Split('|');
+                    if (parts.Length < 3)
+                    {
+                        MessageBox.Show("Invalid question format received from server.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
                     string question = parts[1];
                     string[] options = parts.Skip(2).ToArray();
 
                     Invoke((Action)(() =>
                     {
-                        DisplayQuestion((question, options, -1)); // -1 lebo klient nepozná správnu odpoveď
+                        DisplayQuestion((question, options, -1));
                     }));
                 }
                 else if (message.StartsWith("LEADERBOARD"))
@@ -189,7 +210,6 @@ namespace KahootLAN
                 }
                 else if (message == "RESET")
                 {
-                    // Resetuje stav klienta
                     Invoke((Action)(() =>
                     {
                         ResetQuiz();
@@ -206,16 +226,39 @@ namespace KahootLAN
         {
             if (!isHost) return;
 
-            // Povie klientom, že kvíz začína
+            // Send all questions to clients
             foreach (var cl in clients)
             {
-                var msg = Encoding.UTF8.GetBytes("START_QUIZ");
-                await cl.GetStream().WriteAsync(msg, 0, msg.Length);
+                foreach (var question in questions)
+                {
+                    string message = $"ALL_QUESTIONS|{question.Question}|{string.Join("|", question.Options)}|{question.CorrectIndex}";
+                    var msg = Encoding.UTF8.GetBytes(message);
+                    await cl.GetStream().WriteAsync(msg, 0, msg.Length);
+                }
             }
 
-            // Spustí kvíz pre hosta
+            Console.WriteLine($"Number of connected clients: {clients.Count}");
+
+            // Notify clients that the quiz is starting
+            foreach (var cl in clients.ToList()) // Use ToList to avoid modifying the collection during iteration
+            {
+                try
+                {
+                    var msg = Encoding.UTF8.GetBytes("START_QUIZ");
+                    await cl.GetStream().WriteAsync(msg, 0, msg.Length);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to send message to a client: {ex.Message}");
+                    clients.Remove(cl); // Remove disconnected clients
+                }
+            }
+
+
+            // Start the quiz for the host
             StartQuiz();
         }
+
 
         private string GetLocalIPAddress()
         {
@@ -246,23 +289,54 @@ namespace KahootLAN
                 SendQuestionToClients();
             }
 
-            // Zobrazí prvú otázku pre hosta
-            DisplayQuestion(questions[currentQuestionIndex]);
+            if (currentQuestionIndex >= 0 && currentQuestionIndex < questions.Count)
+            {
+                DisplayQuestion(questions[currentQuestionIndex]);
+            }
+            else
+            {
+                foreach (var i in questions)
+                {
+                    Console.WriteLine(i);
+                }
+                MessageBox.Show("Invalid question index.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void SendQuestionToClients()
         {
+            if (currentQuestionIndex >= questions.Count)
+            {
+                MessageBox.Show("No more questions to send!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             var question = questions[currentQuestionIndex];
             string message = $"QUESTION|{question.Question}|{string.Join("|", question.Options)}";
-            foreach (var cl in clients)
-            { 
-                var msg = Encoding.UTF8.GetBytes(message);
-                cl.GetStream().WriteAsync(msg, 0, msg.Length);
+
+            foreach (var cl in clients.ToList()) // Use ToList to avoid modifying the collection during iteration
+            {
+                try
+                {
+                    var msg = Encoding.UTF8.GetBytes(message);
+                    cl.GetStream().WriteAsync(msg, 0, msg.Length);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to send question to a client: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    clients.Remove(cl); // Remove disconnected clients
+                }
             }
         }
 
         private void DisplayQuestion((string Question, string[] Options, int CorrectIndex) question)
         {
+            if (currentQuestionIndex < 0 || currentQuestionIndex >= questions.Count)
+            {
+                MessageBox.Show("Invalid question index!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             // Shuffle the options
             List<int> indices = new List<int> { 0, 1, 2, 3 };
             Random random = new Random();
@@ -306,7 +380,10 @@ namespace KahootLAN
                     checkBoxes[i].Visible = false;
                 }
                 checkBoxes[i].Checked = false;
+
+                Console.WriteLine($"Checkbox {i}: Text='{checkBoxes[i].Text}', Visible={checkBoxes[i].Visible}");
             }
+
 
             // Reset button color
             btnSubmit.BackColor = System.Drawing.Color.White;
@@ -559,32 +636,25 @@ namespace KahootLAN
         {
             try
             {
-                // vybraný súbor
                 var lines = System.IO.File.ReadAllLines(filePath);
                 foreach (var line in lines)
                 {
-                    var parts = line.Split('|');
-                    if (parts.Length >= 3) //overenie či je spravne napisany riadok
+                    var parts = line.Split('/');
+                    if (parts.Length < 3)
                     {
-                        // format suboru:
-                        // Otazka|prva,druha,tretia|2
-                        // druhaOtazka|prva,druha|0
-                        // IF na menej otazok
+                        MessageBox.Show($"Invalid format in line: {line}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        continue;
+                    }
 
-                        string question = parts[0];
-                        string[] options = parts[1].Split(',');
-                        if (int.TryParse(parts[2], out int correctIndex) && correctIndex >= 0 && correctIndex < options.Length) //overenie či je spravne napisany riadok
-                        {
-                            questions.Add((question, options, correctIndex));
-                        }
-                        else
-                        {
-                            MessageBox.Show($"Invalid correct index in line: {line}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
+                    string question = parts[0];
+                    string[] options = parts[1].Split(',');
+                    if (int.TryParse(parts[2], out int correctIndex) && correctIndex >= 0 && correctIndex < options.Length)
+                    {
+                        questions.Add((question, options, correctIndex));
                     }
                     else
                     {
-                        MessageBox.Show($"Invalid format in line: {line}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show($"Invalid correct index in line: {line}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
@@ -601,7 +671,7 @@ namespace KahootLAN
 
         private void button4_Click(object sender, EventArgs e)
         {
-            testText += textBox1.Text + "|" + textBox2.Text + "," + textBox3.Text + "," + textBox4.Text + "," + textBox5.Text + "|" + 0 + "\n";
+            testText += textBox1.Text + "/" + textBox2.Text + "," + textBox3.Text + "," + textBox4.Text + "," + textBox5.Text + "/" + 0 + "\n";
             textBox1.Clear();
             textBox2.Clear();
             textBox3.Clear();

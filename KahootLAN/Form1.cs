@@ -276,8 +276,12 @@ namespace KahootLAN
         }
         private void StartQuiz()
         {
+            Console.WriteLine("Start quiz začal, som klient?: " + !isHost);
+
             panel2.Visible = false;
             panel3.Visible = true;
+
+            Console.WriteLine("panel3!");
 
             // Nastaví viditeľnosť tlačidiel podľa toho, či je host alebo klient
             btnNextQuestion.Visible = isHost;

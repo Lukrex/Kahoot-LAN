@@ -469,6 +469,7 @@ namespace KahootLAN
             this.button5.TabIndex = 8;
             this.button5.Text = "VYTVORIŤ";
             this.button5.UseVisualStyleBackColor = false;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // button4
             // 
@@ -518,6 +519,7 @@ namespace KahootLAN
             this.textBox2.Size = new System.Drawing.Size(100, 20);
             this.textBox2.TabIndex = 3;
             this.textBox2.Visible = false;
+            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // textBox1
             // 
@@ -560,8 +562,8 @@ namespace KahootLAN
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(600, 365);
-            this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel4);
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel3);
             this.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);

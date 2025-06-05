@@ -19,6 +19,7 @@ namespace KahootLAN
         int viacOtazok = 0;
         int pocetOtazok = 0;
         string otazka = null;
+        string testText = "";
         private TcpListener server;
         private List<TcpClient> clients = new List<TcpClient>();
         private TcpClient client;
@@ -415,6 +416,25 @@ namespace KahootLAN
             }
         }
 
+        private void SaveFile()
+        {
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Filter = "Text Files (.txt)|.txt|All Files (.)|.";
+                saveFileDialog.Title = "Uložiť kvíz";
+                saveFileDialog.DefaultExt = "txt";
+                saveFileDialog.AddExtension = true;
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = saveFileDialog.FileName;
+
+                    File.WriteAllText(filePath, testText);
+                    MessageBox.Show($"File saved successfully at: {filePath}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+
         // Prepne na panel 4
         private void button1_Click(object sender, EventArgs e)
         {
@@ -549,19 +569,12 @@ namespace KahootLAN
 
         private void button4_Click(object sender, EventArgs e)
         {
-            if (anoNie == 1)
-            {
-                File.AppendAllText(file, textBox1.Text + "\n");
-            }
-            else if (viacOtazok == 1)
-            {
-                File.AppendAllText(file, textBox1.Text + "\n");
-            }
-            else
-            {
-                MessageBox.Show("Vyber typ otázky");
-            }
+            testText += textBox1.Text + "|" + textBox2.Text + "," + textBox3.Text + "," + textBox4.Text + "," + textBox5.Text + "|" + 0 + "\n";
             textBox1.Clear();
+            textBox2.Clear();
+            textBox3.Clear();
+            textBox4.Clear();
+            textBox5.Clear();
         }
 
 
@@ -582,6 +595,16 @@ namespace KahootLAN
                 prompt.ShowDialog();
                 return textBox.Text;
             }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            SaveFile();
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

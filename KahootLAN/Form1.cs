@@ -158,94 +158,113 @@ namespace KahootLAN
         private async Task ReceiveFromServerAsync()
         {
             var buffer = new byte[1024];
+            var data = new StringBuilder();
+
             while (client.Connected)
             {
                 int byteCount = await stream.ReadAsync(buffer, 0, buffer.Length);
-                string message = Encoding.UTF8.GetString(buffer, 0, byteCount);
+                data.Append(Encoding.UTF8.GetString(buffer, 0, byteCount));
 
-                if (message == "START_QUIZ")
+                // Process complete messages
+                string[] messages = data.ToString().Split('\n');
+                for (int i = 0; i < messages.Length - 1; i++)
                 {
-                    Invoke((Action)(() =>
-                    {
-                        Console.WriteLine("Quiz Start received on client.");
-                        StartQuiz();
-                    }));
+                    ProcessMessage(messages[i]);
                 }
-                else if (message.StartsWith("ALL_QUESTIONS"))
-                {
-                    string[] parts = message.Split('|');
-                    if (parts.Length < 4)
-                    {
-                        MessageBox.Show("Invalid question format received from server.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        continue;
-                    }
 
-                    string question = parts[1];
-                    string[] options = parts.Skip(2).Take(parts.Length - 3).ToArray();
-                    int correctIndex = int.Parse(parts[parts.Length - 1]);
-
-                    questions.Add((question, options, correctIndex));
-                }
-                else if (message.StartsWith("QUESTION"))
-                {
-                    string[] parts = message.Split('|');
-                    if (parts.Length < 3)
-                    {
-                        MessageBox.Show("Invalid question format received from server.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-
-                    string question = parts[1];
-                    string[] options = parts.Skip(2).ToArray();
-
-                    Invoke((Action)(() =>
-                    {
-                        DisplayQuestion((question, options, -1));
-                    }));
-                }
-                else if (message.StartsWith("LEADERBOARD"))
-                {
-                    string leaderboard = message.Substring("LEADERBOARD|".Length);
-                    MessageBox.Show($"Leaderboard:\n{leaderboard}");
-                }
-                else if (message == "RESET")
-                {
-                    Invoke((Action)(() =>
-                    {
-                        ResetQuiz();
-                    }));
-                }
-                else
-                {
-                    Console.WriteLine($"Server says: {message}");
-                }
+                // Keep the last incomplete message in the buffer
+                data.Clear();
+                data.Append(messages[messages.Length - 1]);
             }
         }
+
+        private void ProcessMessage(string message)
+        {
+            Console.WriteLine($"Message received from server: {message}");
+
+            if (message == "START_QUIZ")
+            {
+                Invoke((Action)(() =>
+                {
+                    Console.WriteLine("Quiz Start received on client.");
+                    StartQuiz();
+                }));
+            }
+            else if (message.StartsWith("ALL_QUESTIONS"))
+            {
+                string[] parts = message.Split('|');
+                if (parts.Length < 4)
+                {
+                    MessageBox.Show("Invalid question format received from server.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                string question = parts[1];
+                string[] options = parts.Skip(2).Take(parts.Length - 3).ToArray();
+                int correctIndex = int.Parse(parts[parts.Length - 1]);
+
+                questions.Add((question, options, correctIndex));
+            }
+            else if (message.StartsWith("LEADERBOARD"))
+            {
+                string leaderboard = message.Substring("LEADERBOARD|".Length);
+                Invoke((Action)(() =>
+                {
+                    MessageBox.Show($"Leaderboard:\n{leaderboard}");
+
+                    // Move to the next question for the client
+                    currentQuestionIndex++;
+                    if (currentQuestionIndex < questions.Count)
+                    {
+                        DisplayQuestion(questions[currentQuestionIndex]);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Quiz finished!");
+                        ResetQuiz();
+                    }
+                }));
+            }
+            else if (message == "RESET")
+            {
+                Invoke((Action)(() =>
+                {
+                    ResetQuiz();
+                }));
+            }
+            else
+            {
+                Console.WriteLine($"Server says: {message}");
+            }
+        }
+
 
         private async void btnStartQuiz_Click_1(object sender, EventArgs e)
         {
             if (!isHost) return;
 
+
+            Console.WriteLine($"Number of connected clients: {clients.Count}");
+
             // Send all questions to clients
-            foreach (var cl in clients)
+            foreach (var cl in clients.ToList())
             {
                 foreach (var question in questions)
                 {
-                    string message = $"ALL_QUESTIONS|{question.Question}|{string.Join("|", question.Options)}|{question.CorrectIndex}";
-                    var msg = Encoding.UTF8.GetBytes(message);
-                    await cl.GetStream().WriteAsync(msg, 0, msg.Length);
+                    var msg1 = Encoding.UTF8.GetBytes($"ALL_QUESTIONS|{question.Question}|{string.Join("|", question.Options)}|{question.CorrectIndex}\n");
+                    await cl.GetStream().WriteAsync(msg1, 0, msg1.Length);
+                    Console.WriteLine($"Sending: {Encoding.UTF8.GetString(msg1)}");
                 }
             }
-
-            Console.WriteLine($"Number of connected clients: {clients.Count}");
 
             // Notify clients that the quiz is starting
             foreach (var cl in clients.ToList()) // Use ToList to avoid modifying the collection during iteration
             {
                 try
                 {
-                    var msg = Encoding.UTF8.GetBytes("START_QUIZ");
-                    await cl.GetStream().WriteAsync(msg, 0, msg.Length);
+                    var msg2 = Encoding.UTF8.GetBytes("START_QUIZ\n");
+                    await cl.GetStream().WriteAsync(msg2, 0, msg2.Length);
+                    Console.WriteLine($"Sending: {msg2}");
                 }
                 catch (Exception ex)
                 {
@@ -253,7 +272,6 @@ namespace KahootLAN
                     clients.Remove(cl); // Remove disconnected clients
                 }
             }
-
 
             // Start the quiz for the host
             StartQuiz();
@@ -281,17 +299,10 @@ namespace KahootLAN
             panel2.Visible = false;
             panel3.Visible = true;
 
-            Console.WriteLine("panel3!");
-
             // Nastaví viditeľnosť tlačidiel podľa toho, či je host alebo klient
             btnNextQuestion.Visible = isHost;
             btnSubmit.Visible = !isHost;
 
-            // Pošle prvú otázku klientom
-            if (isHost)
-            {
-                SendQuestionToClients();
-            }
 
             if (currentQuestionIndex >= 0 && currentQuestionIndex < questions.Count)
             {
@@ -304,32 +315,6 @@ namespace KahootLAN
                     Console.WriteLine(i);
                 }
                 MessageBox.Show("Invalid question index.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void SendQuestionToClients()
-        {
-            if (currentQuestionIndex >= questions.Count)
-            {
-                MessageBox.Show("No more questions to send!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            var question = questions[currentQuestionIndex];
-            string message = $"QUESTION|{question.Question}|{string.Join("|", question.Options)}";
-
-            foreach (var cl in clients.ToList()) // Use ToList to avoid modifying the collection during iteration
-            {
-                try
-                {
-                    var msg = Encoding.UTF8.GetBytes(message);
-                    cl.GetStream().WriteAsync(msg, 0, msg.Length);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Failed to send question to a client: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    clients.Remove(cl); // Remove disconnected clients
-                }
             }
         }
 
@@ -413,6 +398,9 @@ namespace KahootLAN
 
             string message = $"ANSWER|{selectedAnswer}";
             var msg = Encoding.UTF8.GetBytes(message);
+
+            Console.WriteLine($"Sending: {message}");
+
             stream.WriteAsync(msg, 0, msg.Length);
         }
 
@@ -434,8 +422,10 @@ namespace KahootLAN
 
             foreach (var cl in clients)
             {
-                var msg = Encoding.UTF8.GetBytes($"LEADERBOARD|{leaderboard}");
+                string leaderboardMessage = $"LEADERBOARD|{leaderboard}\n";
+                var msg = Encoding.UTF8.GetBytes(leaderboardMessage);
                 cl.GetStream().WriteAsync(msg, 0, msg.Length);
+                Console.WriteLine($"Sending: {leaderboardMessage}");
             }
 
             MessageBox.Show($"Leaderboard:\n{leaderboard}");
@@ -444,7 +434,6 @@ namespace KahootLAN
             currentQuestionIndex++;
             if (currentQuestionIndex < questions.Count)
             {
-                SendQuestionToClients();
                 DisplayQuestion(questions[currentQuestionIndex]);
             }
             else
@@ -454,7 +443,7 @@ namespace KahootLAN
                 // Povie klientom, že sa resetuje
                 foreach (var cl in clients)
                 {
-                    var msg = Encoding.UTF8.GetBytes("RESET");
+                    var msg = Encoding.UTF8.GetBytes("RESET\n");
                     cl.GetStream().WriteAsync(msg, 0, msg.Length);
                 }
 

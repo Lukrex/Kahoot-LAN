@@ -264,11 +264,42 @@ namespace KahootLAN
         private void DisplayQuestion((string Question, string[] Options, int CorrectIndex) question)
         {
             // Nastaví otázku a možnosti
-            label3.Text = question.Question;
+            List<int> indices = new List<int> { 0, 1, 2, 3 };
+
+            // Shuffle the indices using a random number generator
+            Random random = new Random();
+            for (int i = indices.Count - 1; i > 0; i--)
+            {
+                int j = random.Next(i + 1);
+                int temp = indices[i];
+                indices[i] = indices[j];
+                indices[j] = temp;
+            }
+
+            // Create a new array for shuffled options
+            string[] shuffledOptions = new string[4];
+            int newCorrectIndex = -1;
+
+            for (int i = 0; i < indices.Count; i++)
+            {
+                shuffledOptions[i] = question.Options[indices[i]];
+
+                // Update the correct index if the current option is the correct one
+                if (indices[i] == question.CorrectIndex)
+                {
+                    newCorrectIndex = i;
+                }
+            }
+
+            // Update the question with shuffled options and the new correct index
+            question = (question.Question, shuffledOptions, newCorrectIndex);
+
+            // Set the shuffled options in the UI
             checkBox1.Text = question.Options[0];
             checkBox2.Text = question.Options[1];
             checkBox3.Text = question.Options[2];
             checkBox4.Text = question.Options[3];
+            label3.Text = question.Question;
 
             // Resetuje checkboxy
             checkBox1.Checked = false;
@@ -281,6 +312,8 @@ namespace KahootLAN
 
             // labelik: na ktorej som otázke
             lblQuestionNumber.Text = $"{currentQuestionIndex + 1}/{questions.Count}";
+
+
         }
 
         private void btnSubmit_Click(object sender, EventArgs e)

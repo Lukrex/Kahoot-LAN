@@ -370,7 +370,8 @@ namespace KahootLAN
         // Keď klient klikne na "Submit", pošle odpoveď
         private void btnSubmit_Click(object sender, EventArgs e)
         {
-            btnSubmit.BackColor = System.Drawing.Color.Lime;
+            btnSubmit.BackColor =Color.Black;
+            btnSubmit.ForeColor = Color.White;
             int selectedAnswer = -1;
             if (checkBox1.Checked) selectedAnswer = 0;
             else if (checkBox2.Checked) selectedAnswer = 1;
@@ -394,6 +395,8 @@ namespace KahootLAN
         private void btnNextQuestion_Click(object sender, EventArgs e)
         {
             // Odškrtne všetky checkboxy
+            btnNextQuestion.BackColor = Color.Black;
+            btnNextQuestion.ForeColor = Color.White;
             checkBox1.Checked = false;
             checkBox2.Checked = false;
             checkBox3.Checked = false;
@@ -726,6 +729,18 @@ namespace KahootLAN
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            panel4.Visible = false;
+            panel2.Visible = true;
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            panel2.Visible = false;
+            panel1.Visible = true;
         }
     }
 }

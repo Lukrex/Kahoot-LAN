@@ -18,6 +18,8 @@ namespace KahootLAN
         int anoNie = 0;
         int viacOtazok = 0;
         int pocetOtazok = 0;
+        bool ano = false;
+        bool nie = false;
         string otazka = null;
         string testText = "";
         private TcpListener server;
@@ -589,6 +591,8 @@ namespace KahootLAN
 
         private void button6_Click(object sender, EventArgs e)
         {
+            ano = true;
+            nie = false;
             button6.BackColor = Color.Black;
             button6.ForeColor = Color.White;
             button7.BackColor = Color.White;
@@ -597,6 +601,8 @@ namespace KahootLAN
 
         private void button7_Click(object sender, EventArgs e)
         {
+            nie = true;
+            ano = false;
             button7.BackColor = Color.Black;
             button7.ForeColor = Color.White;
             button6.BackColor = Color.White;
@@ -609,6 +615,8 @@ namespace KahootLAN
             {
                 var lines = System.IO.File.ReadAllLines(filePath);
                 Random random = new Random();
+
+                questions.Clear();
 
                 foreach (var line in lines)
                 {
@@ -659,12 +667,26 @@ namespace KahootLAN
 
         private void button4_Click(object sender, EventArgs e)
         {
-            testText += textBox1.Text + "/" + textBox2.Text + "," + textBox3.Text + "," + textBox4.Text + "," + textBox5.Text + "/" + 0 + "\n";
+            if (viacOtazok == 1 && anoNie == 0)
+            {
+                testText += textBox1.Text + "/" + textBox2.Text + "," + textBox3.Text + "," + textBox4.Text + "," + textBox5.Text + "/" + 0 + "\n";
+                textBox2.Clear();
+                textBox3.Clear();
+                textBox4.Clear();
+                textBox5.Clear();
+            }
+            else if (anoNie == 1 && viacOtazok == 0)
+            {
+                if (ano == true && nie == false)
+                {
+                    testText += textBox1.Text + "/Áno,Nie,,/" + 0 + "\n";
+                }
+                else if (nie == true && ano == false)
+                {
+                    testText += textBox1.Text + "/Nie,Áno,,/" + 0 + "\n";
+                }
+            }
             textBox1.Clear();
-            textBox2.Clear();
-            textBox3.Clear();
-            textBox4.Clear();
-            textBox5.Clear();
         }
 
 

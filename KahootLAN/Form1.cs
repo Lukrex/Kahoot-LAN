@@ -735,12 +735,15 @@ namespace KahootLAN
         {
             panel4.Visible = false;
             panel2.Visible = true;
+            testText = "";
+
         }
 
         private void button9_Click(object sender, EventArgs e)
         {
             panel2.Visible = false;
             panel1.Visible = true;
+            ResetQuiz();
         }
     }
 }

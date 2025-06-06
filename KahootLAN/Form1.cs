@@ -385,12 +385,6 @@ namespace KahootLAN
             else if (checkBox3.Checked) selectedAnswer = 2;
             else if (checkBox4.Checked) selectedAnswer = 3;
 
-            if (selectedAnswer == -1)
-            {
-                MessageBox.Show("Please select an answer!");
-                return;
-            }
-
             string message = $"ANSWER|{selectedAnswer}";
             var msg = Encoding.UTF8.GetBytes(message);
 

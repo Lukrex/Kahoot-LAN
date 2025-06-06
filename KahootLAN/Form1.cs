@@ -340,6 +340,7 @@ namespace KahootLAN
 
             // Nastaví otázku a možnosti
             label3.Text = question.Question;
+            
 
             // Aktualizuje checkboxy
             CheckBox[] checkBoxes = { checkBox1, checkBox2, checkBox3, checkBox4 };
@@ -362,6 +363,7 @@ namespace KahootLAN
 
             // Resetuje farbu tlačidla
             btnSubmit.BackColor = System.Drawing.Color.White;
+            btnSubmit.ForeColor = System.Drawing.Color.Black;
 
             // Aktualizuje číslo otázky
             lblQuestionNumber.Text = $"{currentQuestionIndex + 1}/{questions.Count}";
@@ -395,8 +397,9 @@ namespace KahootLAN
         private void btnNextQuestion_Click(object sender, EventArgs e)
         {
             // Odškrtne všetky checkboxy
-            btnNextQuestion.BackColor = Color.Black;
-            btnNextQuestion.ForeColor = Color.White;
+
+            btnSubmit.BackColor = System.Drawing.Color.White;
+            btnSubmit.ForeColor = System.Drawing.Color.Black;
             checkBox1.Checked = false;
             checkBox2.Checked = false;
             checkBox3.Checked = false;

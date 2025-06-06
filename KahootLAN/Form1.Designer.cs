@@ -240,10 +240,13 @@ namespace KahootLAN
             // lblQuestionNumber
             // 
             this.lblQuestionNumber.AutoSize = true;
+            this.lblQuestionNumber.BackColor = System.Drawing.Color.Transparent;
+            this.lblQuestionNumber.Font = new System.Drawing.Font("Arial Black", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lblQuestionNumber.ForeColor = System.Drawing.Color.White;
             this.lblQuestionNumber.Location = new System.Drawing.Point(14, 7);
             this.lblQuestionNumber.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblQuestionNumber.Name = "lblQuestionNumber";
-            this.lblQuestionNumber.Size = new System.Drawing.Size(0, 13);
+            this.lblQuestionNumber.Size = new System.Drawing.Size(0, 18);
             this.lblQuestionNumber.TabIndex = 8;
             // 
             // label3
@@ -586,10 +589,10 @@ namespace KahootLAN
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(600, 365);
-            this.Controls.Add(this.panel4);
-            this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel3);
+            this.Controls.Add(this.panel4);
             this.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.Name = "Form1";
             this.Text = "Form1";

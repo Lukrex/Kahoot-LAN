@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -14,13 +13,11 @@ namespace KahootLAN
 {
     public partial class Form1 : Form
     {
-        string file = "C:\\Users\\PC\\Desktop\\otazky.txt";
         int anoNie = 0;
         int viacOtazok = 0;
         int pocetOtazok = 0;
         bool ano = false;
         bool nie = false;
-        string otazka = null;
         string testText = "";
         private TcpListener server;
         private List<TcpClient> clients = new List<TcpClient>();
@@ -28,7 +25,7 @@ namespace KahootLAN
         private NetworkStream stream;
         private const int port = 55413;
         private bool isHost = false;
-        private List<(string Question, string[] Options, int CorrectIndex)> questions = new List<(string, string[], int)>{};
+        private List<(string Question, string[] Options, int CorrectIndex)> questions = new List<(string, string[], int)> { };
         private int currentQuestionIndex = 0;
         private Dictionary<string, int> playerScores = new Dictionary<string, int>();
         private string nickname;
@@ -39,6 +36,7 @@ namespace KahootLAN
             InitializeComponent();
         }
 
+        // Keď klikneš na "Host", spustí sa server
         private async void btnHost_Click_1(object sender, EventArgs e)
         {
             isHost = true;
@@ -49,14 +47,15 @@ namespace KahootLAN
             btnStartQuiz.Visible = true;
             button1.Visible = true;
 
+            // Zistí IP adresu a ukáže ju
             string ip = GetLocalIPAddress();
-            MessageBox.Show($"Server started at {ip}:{port}");
+            MessageBox.Show($"Server spustený na {ip}:{port}");
             server = new TcpListener(IPAddress.Any, port);
             server.Start();
             await AcceptClientsAsync();
-
         }
 
+        // Čaká na pripojenie klientov
         private async Task AcceptClientsAsync()
         {
             while (true)
@@ -71,7 +70,7 @@ namespace KahootLAN
                     TcpClient newClient = await server.AcceptTcpClientAsync();
                     clients.Add(newClient);
 
-                    _ = ReceiveFromClientAsync(newClient); // spustí prijímanie správ od klienta
+                    _ = ReceiveFromClientAsync(newClient); // Spustí prijímanie správ od klienta
                 }
                 catch (ObjectDisposedException)
                 {
@@ -80,6 +79,7 @@ namespace KahootLAN
             }
         }
 
+        // Prijíma správy od klienta
         private async Task ReceiveFromClientAsync(TcpClient tcpClient)
         {
             var buffer = new byte[1024];
@@ -93,29 +93,31 @@ namespace KahootLAN
 
                 if (message.StartsWith("NICKNAME"))
                 {
+                    // Klient poslal prezývku
                     string nickname = message.Split('|')[1];
                     clientNicknames[clientIP] = nickname;
 
                     // Pridá meno klienta do zoznamu
                     Invoke((Action)(() =>
                     {
-                        listBox1.Items.Add($"{nickname} connected");
+                        listBox1.Items.Add($"{nickname} sa pripojil");
                     }));
                 }
                 else if (message.StartsWith("ANSWER"))
                 {
+                    // Klient poslal odpoveď
                     int answer = int.Parse(message.Split('|')[1]);
 
                     if (!playerScores.ContainsKey(clientIP))
                         playerScores[clientIP] = 0;
 
                     if (answer == questions[currentQuestionIndex].CorrectIndex)
-                        playerScores[clientIP] += 10; // Add points for the correct answer
+                        playerScores[clientIP] += 10; // Pridá body za správnu odpoveď
                 }
-
             }
         }
 
+        // Keď klikneš na "Join", pripojíš sa k serveru
         private async void btnJoin_Click_1(object sender, EventArgs e)
         {
             isHost = false;
@@ -123,10 +125,10 @@ namespace KahootLAN
             panel2.Visible = true;
 
             // Pýta si prezývku
-            nickname = Prompt.ShowDialog("Enter your nickname:", "Set Nickname");
+            nickname = Prompt.ShowDialog("Zadaj svoju prezývku:", "Nastav prezývku");
             if (string.IsNullOrWhiteSpace(nickname))
             {
-                MessageBox.Show("Nickname cannot be empty!");
+                MessageBox.Show("Prezývka nemôže byť prázdna!");
                 panel1.Visible = true;
                 panel2.Visible = false;
                 return;
@@ -138,7 +140,7 @@ namespace KahootLAN
             button1.Visible = false;
 
             // Pýta si IP hosta
-            string ip = Prompt.ShowDialog("Enter Host IP (X.X.X.X):", "Join Game");
+            string ip = Prompt.ShowDialog("Zadaj IP hosta (X.X.X.X):", "Pripojiť sa");
             client = new TcpClient();
             await client.ConnectAsync(IPAddress.Parse(ip), port);
             stream = client.GetStream();
@@ -149,15 +151,16 @@ namespace KahootLAN
             await stream.WriteAsync(msg, 0, msg.Length);
 
             _ = ReceiveFromServerAsync();
-            MessageBox.Show("Connected to server!");
+            MessageBox.Show("Pripojený k serveru!");
 
             // Pridá info o pripojení do zoznamu
             Invoke((Action)(() =>
             {
-                listBox1.Items.Add($"You are connected as {nickname}.");
+                listBox1.Items.Add($"Si pripojený ako {nickname}.");
             }));
         }
 
+        // Prijíma správy od servera
         private async Task ReceiveFromServerAsync()
         {
             var buffer = new byte[1024];
@@ -168,37 +171,40 @@ namespace KahootLAN
                 int byteCount = await stream.ReadAsync(buffer, 0, buffer.Length);
                 data.Append(Encoding.UTF8.GetString(buffer, 0, byteCount));
 
-                // Process complete messages
+                // Spracuje celé správy
                 string[] messages = data.ToString().Split('\n');
                 for (int i = 0; i < messages.Length - 1; i++)
                 {
                     ProcessMessage(messages[i]);
                 }
 
-                // Keep the last incomplete message in the buffer
+                // Nechá poslednú nedokončenú správu v buffri
                 data.Clear();
                 data.Append(messages[messages.Length - 1]);
             }
         }
 
+        // Spracuje správu od servera
         private void ProcessMessage(string message)
         {
-            Console.WriteLine($"Message received from server: {message}");
+            Console.WriteLine($"Správa od servera: {message}");
 
             if (message == "START_QUIZ")
             {
+                // Server hovorí, že kvíz začína
                 Invoke((Action)(() =>
                 {
-                    Console.WriteLine("Quiz Start received on client.");
+                    Console.WriteLine("Kvíz začína na klientovi.");
                     StartQuiz();
                 }));
             }
             else if (message.StartsWith("ALL_QUESTIONS"))
             {
+                // Server poslal otázky
                 string[] parts = message.Split('|');
                 if (parts.Length < 4)
                 {
-                    MessageBox.Show("Invalid question format received from server.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Zlý formát otázky od servera.", "Chyba", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -210,12 +216,13 @@ namespace KahootLAN
             }
             else if (message.StartsWith("LEADERBOARD"))
             {
+                // Server poslal tabuľku skóre
                 string leaderboard = message.Substring("LEADERBOARD|".Length);
                 Invoke((Action)(() =>
                 {
-                    MessageBox.Show($"Leaderboard:\n{leaderboard}");
+                    MessageBox.Show($"Tabuľka skóre:\n{leaderboard}");
 
-                    // Move to the next question for the client
+                    // Ide na ďalšiu otázku
                     currentQuestionIndex++;
                     if (currentQuestionIndex < questions.Count)
                     {
@@ -223,13 +230,14 @@ namespace KahootLAN
                     }
                     else
                     {
-                        MessageBox.Show("Quiz finished!");
+                        MessageBox.Show("Kvíz skončil!");
                         ResetQuiz();
                     }
                 }));
             }
             else if (message == "RESET")
             {
+                // Server hovorí, že sa resetuje
                 Invoke((Action)(() =>
                 {
                     ResetQuiz();
@@ -237,50 +245,49 @@ namespace KahootLAN
             }
             else
             {
-                Console.WriteLine($"Server says: {message}");
+                Console.WriteLine($"Server hovorí: {message}");
             }
         }
 
-
+        // Keď host klikne na "Start Quiz", začne kvíz
         private async void btnStartQuiz_Click_1(object sender, EventArgs e)
         {
             if (!isHost) return;
 
+            Console.WriteLine($"Počet pripojených klientov: {clients.Count}");
 
-            Console.WriteLine($"Number of connected clients: {clients.Count}");
-
-            // Send all questions to clients
+            // Pošle všetky otázky klientom
             foreach (var cl in clients.ToList())
             {
                 foreach (var question in questions)
                 {
                     var msg1 = Encoding.UTF8.GetBytes($"ALL_QUESTIONS|{question.Question}|{string.Join("|", question.Options)}|{question.CorrectIndex}\n");
                     await cl.GetStream().WriteAsync(msg1, 0, msg1.Length);
-                    Console.WriteLine($"Sending: {Encoding.UTF8.GetString(msg1)}");
+                    Console.WriteLine($"Posielam: {Encoding.UTF8.GetString(msg1)}");
                 }
             }
 
-            // Notify clients that the quiz is starting
-            foreach (var cl in clients.ToList()) // Use ToList to avoid modifying the collection during iteration
+            // Povie klientom, že kvíz začína
+            foreach (var cl in clients.ToList()) // Použije ToList, aby sa kolekcia nemenila počas iterácie
             {
                 try
                 {
                     var msg2 = Encoding.UTF8.GetBytes("START_QUIZ\n");
                     await cl.GetStream().WriteAsync(msg2, 0, msg2.Length);
-                    Console.WriteLine($"Sending: {msg2}");
+                    Console.WriteLine($"Posielam: {msg2}");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Failed to send message to a client: {ex.Message}");
-                    clients.Remove(cl); // Remove disconnected clients
+                    Console.WriteLine($"Nepodarilo sa poslať správu klientovi: {ex.Message}");
+                    clients.Remove(cl); // Odstráni odpojených klientov
                 }
             }
 
-            // Start the quiz for the host
+            // Spustí kvíz pre hosta
             StartQuiz();
         }
 
-
+        // Zistí lokálnu IP adresu
         private string GetLocalIPAddress()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());
@@ -293,11 +300,13 @@ namespace KahootLAN
                     return ip.ToString();
                 }
             }
-            throw new Exception("No local network adapters with an IPv4 address in the private(LAN) range were found.");
+            throw new Exception("Nenašla sa žiadna lokálna sieťová karta s IPv4 adresou v privátnom (LAN) rozsahu.");
         }
+
+        // Spustí kvíz
         private void StartQuiz()
         {
-            Console.WriteLine("Start quiz začal, som klient?: " + !isHost);
+            Console.WriteLine("Kvíz začal, som klient?: " + !isHost);
 
             panel2.Visible = false;
             panel3.Visible = true;
@@ -305,7 +314,6 @@ namespace KahootLAN
             // Nastaví viditeľnosť tlačidiel podľa toho, či je host alebo klient
             btnNextQuestion.Visible = isHost;
             btnSubmit.Visible = !isHost;
-
 
             if (currentQuestionIndex >= 0 && currentQuestionIndex < questions.Count)
             {
@@ -317,22 +325,23 @@ namespace KahootLAN
                 {
                     Console.WriteLine(i);
                 }
-                MessageBox.Show("Invalid question index.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Zlý index otázky.", "Chyba", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
+        // Zobrazí otázku
         private void DisplayQuestion((string Question, string[] Options, int CorrectIndex) question)
         {
             if (currentQuestionIndex < 0 || currentQuestionIndex >= questions.Count)
             {
-                MessageBox.Show("Invalid question index!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Zlý index otázky!", "Chyba", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            // Set the question and options
+            // Nastaví otázku a možnosti
             label3.Text = question.Question;
 
-            // Update checkboxes
+            // Aktualizuje checkboxy
             CheckBox[] checkBoxes = { checkBox1, checkBox2, checkBox3, checkBox4 };
             for (int i = 0; i < checkBoxes.Length; i++)
             {
@@ -348,17 +357,17 @@ namespace KahootLAN
                 }
                 checkBoxes[i].Checked = false;
 
-                Console.WriteLine($"Checkbox {i}: Text='{checkBoxes[i].Text}', Visible={checkBoxes[i].Visible}");
+                Console.WriteLine($"Checkbox {i}: Text='{checkBoxes[i].Text}', Viditeľný={checkBoxes[i].Visible}");
             }
 
-
-            // Reset button color
+            // Resetuje farbu tlačidla
             btnSubmit.BackColor = System.Drawing.Color.White;
 
-            // Update question number label
+            // Aktualizuje číslo otázky
             lblQuestionNumber.Text = $"{currentQuestionIndex + 1}/{questions.Count}";
         }
 
+        // Keď klient klikne na "Submit", pošle odpoveď
         private void btnSubmit_Click(object sender, EventArgs e)
         {
             btnSubmit.BackColor = System.Drawing.Color.Lime;
@@ -631,7 +640,7 @@ namespace KahootLAN
                     string[] options = parts[1].Split(',');
                     if (int.TryParse(parts[2], out int correctIndex) && correctIndex >= 0 && correctIndex < options.Length)
                     {
-                        // Shuffle the options
+                        // Rozhádže možnosti
                         string[] shuffledOptions = options.ToArray();
                         for (int i = shuffledOptions.Length - 1; i > 0; i--)
                         {
@@ -641,11 +650,11 @@ namespace KahootLAN
                             shuffledOptions[j] = temp;
                         }
 
-                        // Find the new correct index
+                        // Nájde pôvodný správny index v rozhádzaných možnostiach
                         string originalCorrectAnswer = options[correctIndex];
                         int newCorrectIndex = Array.IndexOf(shuffledOptions, originalCorrectAnswer);
 
-                        // Add the shuffled question to the list
+                        // ´Pridá rozhádzanú otázku do Listu
                         questions.Add((question, shuffledOptions, newCorrectIndex));
                     }
                     else

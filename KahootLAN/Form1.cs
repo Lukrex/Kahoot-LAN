@@ -108,8 +108,9 @@ namespace KahootLAN
                         playerScores[clientIP] = 0;
 
                     if (answer == questions[currentQuestionIndex].CorrectIndex)
-                        playerScores[clientIP] += 10; // Pridá body za správnu odpoveď
+                        playerScores[clientIP] += 10; // Add points for the correct answer
                 }
+
             }
         }
 
@@ -326,31 +327,6 @@ namespace KahootLAN
                 return;
             }
 
-            // Shuffle the options and update the correct index
-            string[] shuffledOptions = question.Options.ToArray();
-            int originalCorrectIndex = question.CorrectIndex;
-            Random random = new Random();
-            int newCorrectIndex = originalCorrectIndex;
-
-            for (int i = shuffledOptions.Length - 1; i > 0; i--)
-            {
-                int j = random.Next(i + 1);
-
-                // Swap options
-                string temp = shuffledOptions[i];
-                shuffledOptions[i] = shuffledOptions[j];
-                shuffledOptions[j] = temp;
-
-                // Update the correct index if it was swapped
-                if (i == newCorrectIndex)
-                    newCorrectIndex = j;
-                else if (j == newCorrectIndex)
-                    newCorrectIndex = i;
-            }
-
-            // Update the question with shuffled options and the new correct index
-            question = (question.Question, shuffledOptions, newCorrectIndex);
-
             // Set the question and options
             label3.Text = question.Question;
 
@@ -372,6 +348,7 @@ namespace KahootLAN
 
                 Console.WriteLine($"Checkbox {i}: Text='{checkBoxes[i].Text}', Visible={checkBoxes[i].Visible}");
             }
+
 
             // Reset button color
             btnSubmit.BackColor = System.Drawing.Color.White;
@@ -495,6 +472,8 @@ namespace KahootLAN
             nickname = null;
 
             lblQuestionNumber.Text = string.Empty;
+
+            questions.Clear();
         }
 
         // Načítanie otázok zo súboru
@@ -629,6 +608,8 @@ namespace KahootLAN
             try
             {
                 var lines = System.IO.File.ReadAllLines(filePath);
+                Random random = new Random();
+
                 foreach (var line in lines)
                 {
                     var parts = line.Split('/');
@@ -642,13 +623,27 @@ namespace KahootLAN
                     string[] options = parts[1].Split(',');
                     if (int.TryParse(parts[2], out int correctIndex) && correctIndex >= 0 && correctIndex < options.Length)
                     {
-                        questions.Add((question, options, correctIndex));
+                        // Shuffle the options
+                        string[] shuffledOptions = options.ToArray();
+                        for (int i = shuffledOptions.Length - 1; i > 0; i--)
+                        {
+                            int j = random.Next(i + 1);
+                            string temp = shuffledOptions[i];
+                            shuffledOptions[i] = shuffledOptions[j];
+                            shuffledOptions[j] = temp;
+                        }
+
+                        // Find the new correct index
+                        string originalCorrectAnswer = options[correctIndex];
+                        int newCorrectIndex = Array.IndexOf(shuffledOptions, originalCorrectAnswer);
+
+                        // Add the shuffled question to the list
+                        questions.Add((question, shuffledOptions, newCorrectIndex));
                     }
                     else
                     {
                         MessageBox.Show($"Invalid correct index in line: {line}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-
                 }
             }
             catch (Exception ex)

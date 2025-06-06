@@ -364,7 +364,10 @@ namespace KahootLAN
             // Resetuje farbu tlačidla
             btnSubmit.BackColor = System.Drawing.Color.White;
             btnSubmit.ForeColor = System.Drawing.Color.Black;
-            btnSubmit.Visible = true;
+            if (!isHost)
+            {
+                btnSubmit.Visible = true;
+            }
 
             // Aktualizuje číslo otázky
             lblQuestionNumber.Text = $"{currentQuestionIndex + 1}/{questions.Count}";

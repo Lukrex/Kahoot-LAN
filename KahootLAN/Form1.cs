@@ -412,7 +412,7 @@ namespace KahootLAN
             checkBox4.Checked = false;
 
             // Ukáže leaderboard
-            var leaderboard = string.Join("\n", playerScores.OrderByDescending(p => p.Value)
+            var leaderboard = string.Join(";", playerScores.OrderByDescending(p => p.Value)
                 .Select(p =>
                 {
                     string nickname = clientNicknames.ContainsKey(p.Key) ? clientNicknames[p.Key] : p.Key;

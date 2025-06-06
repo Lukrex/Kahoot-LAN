@@ -364,6 +364,7 @@ namespace KahootLAN
             // Resetuje farbu tlačidla
             btnSubmit.BackColor = System.Drawing.Color.White;
             btnSubmit.ForeColor = System.Drawing.Color.Black;
+            btnSubmit.Visible = true;
 
             // Aktualizuje číslo otázky
             lblQuestionNumber.Text = $"{currentQuestionIndex + 1}/{questions.Count}";
@@ -374,6 +375,7 @@ namespace KahootLAN
         {
             btnSubmit.BackColor =Color.Black;
             btnSubmit.ForeColor = Color.White;
+            btnSubmit.Visible = false;
             int selectedAnswer = -1;
             if (checkBox1.Checked) selectedAnswer = 0;
             else if (checkBox2.Checked) selectedAnswer = 1;
